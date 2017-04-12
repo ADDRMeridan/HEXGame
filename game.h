@@ -37,4 +37,20 @@ int getCpXAxis(Coup cp);
 //Returns the y Axis value of a Coup
 int getCpYAxis(Coup cp);
 
+/***************************/
+/*********Type Game*********/
+/***************************/
+
+//Defining Game
+typedef struct s_Game *Game;
+
+//Mallocs, initializes all the cells of the board to EMPTY
+//and return the created Game
+Game createGame(Color firstPlayer, unsigned int boardDim);
+
+//Free the memory used by a Game (destroys it)
+void deleteGame(Game g);
+
+Game addCoupToBoard(Coup cp, Game g);
+
 #endif

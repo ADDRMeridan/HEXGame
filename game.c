@@ -1,3 +1,10 @@
+/**************************************************************
+* game.c - Last modified: 15/04/2017                          * *                                                             *
+* Defining struct Game, Coup and functions around those types *
+*                                                             *
+* Mael "ADDRMeridan" MOULIN				      *
+**************************************************************/
+
 #include <stdlib.h>
 #include <stdbool.h>
 #include <stdio.h>
@@ -119,15 +126,6 @@ Game createGame(Color firstPlayer, unsigned int boardDim) {
 
 	return g;
 }
-//Frees the memory used by a Game board
-static void deleteBoard(Game g) {
-
-	unsigned int nbCell = g->dim * g->dim;
-	for(int i = 0; i < nbCell; ++i) {
-		free(&(g->board[i]));
-	}
-	free(g->board);
-}
 
 //Frees the memory used by a Game history
 static void deleteHistory(Game g) {
@@ -143,11 +141,12 @@ void deleteGame(Game g) {
 	//Free History
 	deleteHistory(g);
 	//Free Board
-	deleteBoard(g);
+	free(g->board);
 	//Free Game
 	free(g);
 }
 
+//Saves the Coup in the Game history
 static Game addCoupToHist(Coup cp, Game g) {
 
 	g->hist[g->nbCoup] = cp;
@@ -158,7 +157,7 @@ static Game addCoupToHist(Coup cp, Game g) {
 //of the board to one.
 static int doubleAxisToUnique(int x, int y, unsigned int dim) {
 
-	return ((y * dim) + x);
+	return ((x * dim) + y);
 }
 
 Game addCoupToBoard(Coup cp, Game g) {
@@ -178,8 +177,41 @@ Game addCoupToBoard(Coup cp, Game g) {
 	return g;
 }
 
-//TO REMOVE BEFORE SHARING
-int main(int argc, char *argv[]) {
+unsigned int getBoardDim(Game g) {
 
-	return 0;
+	return g->dim;
+}
+
+Color *getBoard(Game g) {
+
+	return g->board;
+}
+
+Color getCell(int x, int y, Game g) {
+
+	return g->board[doubleAxisToUnique(x, y, g->dim)];
+}
+
+bool isVsAI(Game g) {
+
+	return g->vsAI;
+}
+
+Game undoLastCoup(Game g) {
+
+	//Get last Coup played
+	Coup cp = g->hist[g->nbCoup - 1];
+	//Set cell of last Coup to Empty
+	g->board[doubleAxisToUnique(cp->x, cp->y, g->dim)] = EMPTY;
+	//Free Coup memory
+	deleteCoup(cp);
+	//Decreament nbCoup
+	--g->nbCoup;
+	
+	return g;
+}
+
+unsigned int getTurn(Game g) {
+
+	return (g->nbCoup / 2) + 1;
 }

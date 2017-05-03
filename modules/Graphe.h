@@ -79,6 +79,9 @@ bool chaine_gagnante(Graphe graphe, int couleur);
 
 Graphe graphe_reduit( Graphe graphe );
 
+
+int distance_hexa(Graphe graphe, int row_1, int col_1, int row_2, int col_2);
+
 /* */
 void affiche_sommet_hexa(Graphe graphe);
 

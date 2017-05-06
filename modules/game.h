@@ -2,7 +2,7 @@
 #define GAME_H
 
 /**************************************************************
-* game.c - Last modified: 15/04/2017                          * *                                                             *
+* game.c - Last modified: 06/05/2017                          * *                                                             *
 * Defining types Game, Coup and the headers of functions      *
 *                                                             *
 * Mael "ADDRMeridan" MOULIN				      *
@@ -86,8 +86,11 @@ Game undoLastCoup(Game g);
 //Returns the turn number
 unsigned int getTurn(Game g);
 
+//Returns the number of Coup played
+unsigned int getNbCoup(Game g);
+
 //Returns the Coup of index i form the Game g history
-//PRE: 0 <= i < getTurn(g)
+//PRE: 0 <= i < getNbCoup(g)
 Coup getCoupFromHist(int i, Game g);
 
 #endif

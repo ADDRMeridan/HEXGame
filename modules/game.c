@@ -215,3 +215,8 @@ unsigned int getTurn(Game g) {
 
 	return (g->nbCoup / 2) + 1;
 }
+
+Coup getCoupFromHist(int i, Game g) {
+
+	return (g->hist[i]);
+}

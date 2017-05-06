@@ -86,4 +86,8 @@ Game undoLastCoup(Game g);
 //Returns the turn number
 unsigned int getTurn(Game g);
 
+//Returns the Coup of index i form the Game g history
+//PRE: 0 <= i < getTurn(g)
+Coup getCoupFromHist(int i, Game g);
+
 #endif

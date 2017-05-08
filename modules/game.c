@@ -1,5 +1,5 @@
 /**************************************************************
-* game.c - Last modified: 15/04/2017                          * *                                                             *
+* game.c - Last modified: 06/05/2017                          * *                                                             *
 * Defining struct Game, Coup and functions around those types *
 *                                                             *
 * Mael "ADDRMeridan" MOULIN				      *
@@ -214,6 +214,11 @@ Game undoLastCoup(Game g) {
 unsigned int getTurn(Game g) {
 
 	return (g->nbCoup / 2) + 1;
+}
+
+unsigned int getNbCoup(Game g) {
+
+	return (g->nbCoup);
 }
 
 Coup getCoupFromHist(int i, Game g) {

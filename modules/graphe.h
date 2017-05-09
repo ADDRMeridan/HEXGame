@@ -28,7 +28,7 @@ Graphe inite_graphe(int n);
  *	@param colonne : la colonne correspondante
  *	@param couleur : la couleur de l'hexagone, 0 = NOIR; 1 = BLANC. 
  *
- *	@axiome : couleur = 0 ou couleur = 1 (BLANC ou NOIR)
+ *	@pre-cond : couleur = 0 ou couleur = 1 (BLANC ou NOIR)
 	 	couleur_hexagone( graphe, row, colonne) == 2 (TRANSPARANT);
 	 	la couleur de hexagone a l'emplacement [row,colonne] doit etre egale à 2 = TRANSPARANT
 	 	0 <= row < size_graphe( graphe ); && 0 <= col < size_graphe( graphe );
@@ -56,7 +56,7 @@ int size_graphe(Graphe graphe);
  *	@param row : la ligne
  *	@param colonne : la colonne
  *
- *	@axiome : 0 <= row < size_graphe( graphe ); && 0 <= col < size_graphe( graphe );
+ *	@pre-cond : 0 <= row < size_graphe( graphe ); && 0 <= col < size_graphe( graphe );
  *
  *  @return un entier ( 0, 1 ou 2 ) indiquant la couleur, : 2 = TRANSPARANT; 1 = BLANC; 0 = NOIR.
  *
@@ -70,7 +70,7 @@ int couleur_hexagone(Graphe graphe, int row, int colonne);
  *	@param graphe : le Graphe en question
  *	@param couleur : la couleur des hexagone des chaines voulue
  *
- *	@axiome : couleur = 0 ou couleur = 1, (BLANC ou NOIR)
+ *	@pre-cond : couleur = 0 ou couleur = 1, (BLANC ou NOIR)
  *
  *  @return boolean : true si la couleur est gagnante, sinon false.
  *

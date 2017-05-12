@@ -69,4 +69,29 @@ bool Appartient(Ensemble ens, Element element);
  */
 bool Est_Vide(Ensemble ensemble);
 
+/**
+ *	@brief Donne le cardinal d'un ensemble.
+ *
+ *	@param ensemble : l'ensemble en question
+ *
+ *  @return int : entier correspondant au cardinal de l'ensemble.
+ *
+ */
+int cardinal(Ensemble ensemble);
+
+/**
+ *	@brief Donne l'element à une certaine position de l'ensemble.
+ *
+ *	@param ensemble : l'ensemble en question
+ *	@param position : la position de l'element dans l'ensemble, numero de l'element
+ *
+ *	@pre-condition  : 0 <= position < n; avec 'n' le cardinal de l'ensemble.
+ *
+ *  @return Element : un element correspondant a la posision donnée.
+ *
+ */
+Element element(Ensemble ensemble, int position);
+
+
+
 #endif

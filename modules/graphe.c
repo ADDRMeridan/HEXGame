@@ -1,9 +1,16 @@
+/*----------------------------------------------
+ *Auteur : MOHAMED Mourdas
+ *Dêpendance : ensemble
+ *Date de modification : 12/05/2017
+ *---------------------------------------------*/
+
 #include <stdlib.h>
 #include <assert.h>
 #include <stdio.h>
 #include <stdbool.h>
 
 #include "graphe.h"
+#include "ensemble.h"
 
 /* Sommet */
 struct s_sommet{
@@ -30,12 +37,10 @@ struct s_Graphe{
 	Hexa B1;
 	Hexa B2;
 	int size;
+	Hexa* tab;
 };
 
-
 /*Liste*/
-
-typedef Hexa Element;
 
 struct et_cellule{
 	Element elmt;
@@ -59,8 +64,6 @@ Hexa colorie_sommet(Hexa hex, int couleur){
 	return hex;
 }
 
-
-/* Inite Graphe */
 Graphe inite_graphe(int n){
 	Graphe graphe;
 	Hexa hexa; 
@@ -108,6 +111,9 @@ Graphe inite_graphe(int n){
 
 	graphe -> size =  n;
 
+	graphe -> tab = (Hexa*) malloc( ( n * n ) * sizeof( Hexa ) );
+	assert( graphe -> tab != NULL );
+
 	/* Initialise les numero de ligne et de colonne des sommets */
 	for( int row=0; row<n; row++ ){
 
@@ -146,6 +152,8 @@ Graphe inite_graphe(int n){
 			hexa -> sommet.row = row;
 
 			colorie_sommet(hexa, TRANSPARANT);
+
+			graphe -> tab[graphe -> size*row+col] = hexa;
 
 			/*  */
 			if( row > 0 ){
@@ -208,6 +216,21 @@ Graphe inite_graphe(int n){
 	return graphe;
 }
 
+/**/
+void ligne_col(Graphe g, int num_case, int *ligne, int *col){
+    assert( num_case < (g -> size * g -> size) && num_case >= 0 );
+    
+    *ligne = num_case / g -> size;
+    *col = num_case % g -> size;
+}
+
+/*  */
+int num_case(Graphe g, int ligne, int col){
+    assert( ligne < g -> size && ligne >= 0 && col < g -> size && col >= 0 );
+    
+    return g -> size * ligne + col;
+}
+
 /* */
 int size_graphe(Graphe graphe){
 	return graphe -> size;
@@ -218,17 +241,18 @@ int couleur_sommet(Hexa hex){
 	return hex -> couleur;
 }
 
-int couleur_hexagone(Graphe graphe, int row, int colonne){
-	
-	Hexa hexa = graphe -> W1 -> aretes[row];
+Hexa hexagone(Graphe graphe, int row, int colonne){
+	int n = size_graphe(graphe);
+	assert( row >= 0 && row < n && colonne >= 0 && colonne < n );
+	Hexa hexa = graphe -> tab[num_case(graphe, row, colonne)];
+	return hexa;
+}
 
+int couleur_hexagone(Graphe graphe, int row, int colonne){
 	int n = size_graphe(graphe);
 	assert( row >= 0 && row < n && colonne >= 0 && colonne < n );
 
-	/* */
-	for( int col=0; col<colonne; col++ ){
-		hexa = hexa -> aretes[0];
-	}
+	Hexa hexa = hexagone(graphe, row, colonne);
 
 	/*if( couleur_sommet(hexa) == NOIR )
 		printf("NOIR ");
@@ -248,7 +272,8 @@ bool hex_adjacent(Hexa hex_1, Hexa hex_2){
 	/* Verifie que l'une des arretes de hex_1 pointe bien vers hex_2 */
 	for(int i=0; i<6; i++){
 
-		if( hex_1 != NULL && hex_1 -> aretes[i] != NULL && hex_2 != NULL && hex_1 -> aretes[i] == hex_2 ){
+		if( hex_1 != NULL && hex_1 -> aretes[i] != NULL 
+			&& hex_2 != NULL && hex_1 -> aretes[i] == hex_2 ){
 			//printf("[%d,%d] Connecter au sommet [%d,%d] \n", hex_1->sommet.row, hex_1->sommet.col, hex_2->sommet.row, hex_2->sommet.col);
 			return true;
 		}
@@ -359,18 +384,12 @@ void ajout_dans_groupe(Hexa hex_1, Hexa hex_2){
 /* */
 Graphe ajout_hexagone( Graphe graphe, int row, int colonne, int couleur){
 
-	Hexa hexa = graphe->W1->aretes[row];
-
 	int n = size_graphe(graphe);
 
 	assert( row >= 0 && row < n && colonne >= 0 && colonne < n );
 	assert( couleur == NOIR || couleur == BLANC );
 
-	/* */
-	for( int col=0; col<colonne; col++ ){
-		hexa = hexa->aretes[0];
-	}
-
+	Hexa hexa = hexagone(graphe, row, colonne);
 
 	assert( couleur_sommet( hexa ) == TRANSPARANT );
 	hexa = colorie_sommet(hexa, couleur);
@@ -378,11 +397,9 @@ Graphe ajout_hexagone( Graphe graphe, int row, int colonne, int couleur){
 	for(int i=0; i<6; i++)
 		ajout_dans_groupe( hexa, hexa -> aretes[i] );
 	
-	//printf("[%d,%d] \n", hexa->sommet.row, hexa->sommet.col);
-	
+	//printf("[%d,%d]-- \n", hexa->sommet.row, hexa->sommet.col);
 
 	return graphe;
-
 }
 
 
@@ -408,7 +425,8 @@ bool chaine_gagnante(Graphe graphe, int couleur){
 
 	i=0;
 
-	/* Verifie que le bord_1 appartient à un meme groupe que le bord_2 Exemple w1 et w2 sont dans un meme groupe */
+	/* Verifie que le bord_1 appartient à un meme groupe que 
+	   le bord_2 Exemple w1 et w2 sont dans un meme groupe */
 	while( i<n && !gagnant ){
 
 		if( bord_1->aretes[i]->aretes[6] != NULL ){
@@ -536,9 +554,6 @@ Graphe graphe_reduit( Graphe graphe ){
 }
 
 
-
-
-
 /* */
 void affiche_sommet_hexa(Graphe graphe){
 
@@ -662,21 +677,6 @@ Liste ajoute_element( Liste li, Element el ){
 	return li;
 }
 
-Hexa hexagone(Graphe graphe, int row, int colonne){
-	
-	Hexa hexa = graphe -> W1 -> aretes[row];
-
-	int n = size_graphe(graphe);
-	assert( row >= 0 && row < n && colonne >= 0 && colonne < n );
-
-	/* */
-	for( int col=0; col<colonne; col++ ){
-		hexa = hexa -> aretes[0];
-	}
-
-	return hexa;
-}
-
 Liste supprime_element( Liste li, Element el ){
 	
 	cellule *avant;
@@ -774,6 +774,7 @@ int distance_hexagones(Hexa p, Hexa q){
 
 
 int distance_hexa(Graphe graphe, int row_1, int col_1, int row_2, int col_2){
+
 	Hexa p = hexagone( graphe, row_1, col_1);
 	Hexa q = hexagone( graphe, row_2, col_2);
 
@@ -790,6 +791,7 @@ int distance_hexa(Graphe graphe, int row_1, int col_1, int row_2, int col_2){
  *
  */
 int distance_hexagone_groupe( Hexa p, Hexa groupe){
+
 	int d = distance_hexagones( p, groupe -> aretes[0] );
 
 	for(int i=1; i<groupe -> nb_aretes; i++){
@@ -799,56 +801,6 @@ int distance_hexagone_groupe( Hexa p, Hexa groupe){
 	}
 
 	return d;
-}
-
-
-/* Ensemble */
-
-typedef struct ensemble Ensemble;
-
-struct ensemble{
-	Hexa * element;
-	int cardinal;
-};
-
-Ensemble Vide(){
-    Ensemble ens;
-    ens . element = (Hexa*) malloc( sizeof( Hexa ) );
-	assert( ens . element != NULL );
-
-    ens.cardinal = 0;
-    return ens;
-}
-
-bool Appartient(Ensemble ens, Hexa el){
-    int i;
-    for(i=0; i<ens.cardinal; i++){
-        if( el == ens.element[i] ){
-            return true;
-        }
-    }
-    
-    return false;
-}
-
-/*Ajout d'un element a un ensemble*/
-Ensemble Ajout(Ensemble ensemble, Hexa element){
-
-    if( !Appartient(ensemble, element) ){
-    	ensemble.element = (Hexa*) realloc(ensemble.element, ( ensemble.cardinal + 1 ) * sizeof(Hexa) );
-    	assert( ensemble.element != NULL );
-
-        ensemble.element[ ensemble.cardinal ] = element;
-        ensemble.cardinal++;
-    }
-
-    return ensemble;
-}
-
-
-/*Verifie si un Ensemble est Vide */
-bool Est_Vide(Ensemble ens){
-    return ( ens.cardinal == 0 );
 }
 
 Ensemble ensemble_adjacent(Hexa u){
@@ -873,14 +825,14 @@ Ensemble ensemble_adjacent(Hexa u){
 	return ensemble_u;
 }
 
-/*Fourni l'intersection de deux Ensemble*/
+/* Fourni l'intersection de deux Ensemble */
 Ensemble Intersection(Ensemble ens_1, Ensemble ens_2){
     Ensemble ens_temp;
     int i, e;
     
     for(i=0; i<ens_1.cardinal; i++){
         for(e=0; e<ens_2.cardinal; e++){
-            if( ens_1.element[i] == ens_2.element[e] ){
+            if( couleur_sommet( ens_1.element[i] ) == TRANSPARANT && ens_1.element[i] == ens_2.element[e] ){
                 Ajout(ens_temp, ens_1.element[i] );
             }
         }
@@ -910,11 +862,12 @@ Ensemble intersection(Hexa u, Hexa v){
 }
 
 
-
 bool connexion_forcer(Hexa u, Hexa v){
 	Ensemble i;
 
-	if( couleur_sommet( u ) ==  couleur_sommet( v ) && ( u -> aretes[6] == NULL || u -> aretes[6] != v -> aretes[6] ) ){
+	if( couleur_sommet( u ) != TRANSPARANT && couleur_sommet( u ) ==  couleur_sommet( v ) 
+		&& ( u -> aretes[6] == NULL || u -> aretes[6] != v -> aretes[6] ) ){
+
 		i = intersection( u, v );
 		if( i . cardinal >= 2 ){
 			return true;

@@ -9,7 +9,7 @@
 #define GRAPHE_H
 
 /* Couleur */
-#define TRANSPARANT 2
+#define TRANSPARANT 	2
 #define BLANC 		1
 #define NOIR 		0
 

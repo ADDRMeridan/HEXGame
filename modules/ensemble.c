@@ -53,3 +53,15 @@ bool Est_Vide(Ensemble ens){
     return ( ens.cardinal == 0 );
 }
 
+int cardinal(Ensemble ensemble){
+    return ensemble.cardinal;
+}
+
+Element element(Ensemble ensemble, int position){
+    assert(position >= 0 && position < ensemble.cardinal);
+
+    return ensemble . element[position];
+}
+
+
+

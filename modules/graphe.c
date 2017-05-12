@@ -10,7 +10,7 @@
 #include <stdbool.h>
 
 #include "graphe.h"
- #include "ensemble.h"
+#include "ensemble.h"
 
 /* Sommet */
 struct s_sommet{
@@ -40,7 +40,7 @@ struct s_Graphe{
 	Hexa* tab;
 };
 
-/* Liste*/
+/*Liste*/
 
 struct et_cellule{
 	Element elmt;
@@ -56,7 +56,6 @@ struct et_liste{
 };
 
 typedef struct et_liste Liste;
-
 
 /* */
 Hexa colorie_sommet(Hexa hex, int couleur){
@@ -216,7 +215,7 @@ Graphe inite_graphe(int n){
 	return graphe;
 }
 
-/**/
+/*  */
 void ligne_col(Graphe g, int num_case, int *ligne, int *col){
     assert( num_case < (g -> size * g -> size) && num_case >= 0 );
     
@@ -231,12 +230,10 @@ int num_case(Graphe g, int ligne, int col){
     return g -> size * ligne + col;
 }
 
-/* */
 int size_graphe(Graphe graphe){
 	return graphe -> size;
 }
 
-/* */
 int couleur_sommet(Hexa hex){
 	return hex -> couleur;
 }
@@ -254,22 +251,13 @@ int couleur_hexagone(Graphe graphe, int row, int colonne){
 
 	Hexa hexa = hexagone(graphe, row, colonne);
 
-	/*if( couleur_sommet(hexa) == NOIR )
-		printf("NOIR ");
-	else if( couleur_sommet(hexa) == BLANC ){
-		printf("BLAN ");
-	}
-	else{
-		printf("TRAN ");
-	}*/
-
 	return couleur_sommet( hexa );
 }
 
 /* */
 bool hex_adjacent(Hexa hex_1, Hexa hex_2){
 
-	/* Verifie que l'une des arretes de hex_1 pointe bien vers hex_2 */
+	/* Verifie que l'une des aretes de hex_1 pointe bien vers hex_2 */
 	for(int i=0; i<6; i++){
 
 		if( hex_1 != NULL && hex_1 -> aretes[i] != NULL 
@@ -379,7 +367,6 @@ void ajout_dans_groupe(Hexa hex_1, Hexa hex_2){
 	}
 	//printf("-2-\n");
 }
-
 
 /* */
 Graphe ajout_hexagone( Graphe graphe, int row, int colonne, int couleur){
@@ -501,7 +488,7 @@ Hexa groupe_en_sommet_unique(Graphe graphe, Hexa groupe){
 				sommet_unique -> aretes[ sommet_unique -> nb_aretes-1 ] = (grp) -> aretes[i] -> aretes[e];
 				(grp) -> aretes[i] -> aretes[e] -> aretes[(e+3) % 6] = sommet_unique;
 
-				/* Liberation de la memoire sur les arretes des sommets du groupe */
+				/* Liberation de la memoire sur les aretes des sommets du groupe */
 				(grp) -> aretes[i] -> aretes[e] = NULL;
 				free( (grp) -> aretes[i] -> aretes[e] );
 				
@@ -518,7 +505,6 @@ Hexa groupe_en_sommet_unique(Graphe graphe, Hexa groupe){
 
 	grp = NULL;
 	free(grp);
-
 
 	return sommet_unique;
 }
@@ -712,7 +698,7 @@ Liste supprime_element( Liste li, Element el ){
 	
 }
 
-/* Valeur absolu */
+/* Fourni la Valeur absolu de x */
 int val_abs(int x){
 
 	if( x < 0 ){
@@ -723,15 +709,11 @@ int val_abs(int x){
 
 }
 
-/**
- *	@brief cherche la distance minimal entre deux sommet.
- *
- *	@param p : le 1er sommet concernet
- *	@param q : le 2nd sommet concernet
- *
- *  @return int : un entier corespondant a la distance minimale.
- *
- */
+Hexa groupe(Hexa sommet){
+	return sommet -> aretes[6];
+}
+
+
 int distance_hexagones(Hexa p, Hexa q){
 	int d;
 	int col_1,row_1,col_2,row_2;
@@ -772,25 +754,9 @@ int distance_hexagones(Hexa p, Hexa q){
 	return (d + 1);
 }
 
-
-int distance_hexa(Graphe graphe, int row_1, int col_1, int row_2, int col_2){
-
-	Hexa p = hexagone( graphe, row_1, col_1);
-	Hexa q = hexagone( graphe, row_2, col_2);
-
-	return distance_hexagones( p, q);
-}
-
-/**
- *	@brief cherche la distance minimal entre un sommet et un groupe.
- *
- *	@param p : le sommet concernet
- *	@param groupe : le groupe concernet
- *
- *  @return int : un entier corespondant a la distance minimale.
- *
- */
 int distance_hexagone_groupe( Hexa p, Hexa groupe){
+
+	assert(groupe != NULL);
 
 	int d = distance_hexagones( p, groupe -> aretes[0] );
 
@@ -802,6 +768,7 @@ int distance_hexagone_groupe( Hexa p, Hexa groupe){
 
 	return d;
 }
+
 
 Ensemble ensemble_adjacent(Hexa u){
 	Ensemble ensemble_u = Vide();
@@ -824,6 +791,7 @@ Ensemble ensemble_adjacent(Hexa u){
 
 	return ensemble_u;
 }
+
 
 /* Fourni l'intersection de deux Ensemble */
 Ensemble Intersection(Ensemble ens_1, Ensemble ens_2){

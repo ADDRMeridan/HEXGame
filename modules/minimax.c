@@ -69,7 +69,7 @@ int valeur(Node n){
 	return n . valeur;
 }
 
-int nombre_configuration(Node n){
+int nombre_fils(Node n){
 	return n . nb_fils;
 }
 
@@ -93,6 +93,19 @@ Graphe copie_config(Graphe g, Graphe h){
 	return h;
 }
 
+/**
+ *	@brief une fonction successeur qui associe à chaque 
+ 		conﬁguration de jeu, l’ensemble des conﬁgurations accessibles 
+ 		en un coup.
+ *
+ *	@param config : une configaration (graphe).
+ *	@param couleur : la couleur que l'on shouaite associer au nouvel element, 
+ 		la configuration.
+ *
+ *  @return Ensemble : un ensemble des conﬁgurations accessibles 
+ 		en un coup.
+ *
+ */
 Ensemble successeur(Graphe config, int couleur){
 	int n;
 	int row,col;
@@ -164,8 +177,6 @@ Node* ajout_successeur(Node* n, Ensemble ensemble, int couleur){
 
 		printf("-\n");
 		affiche_sommet_hexa_graph(add -> config);
-		
-		
 	}
 
 	return aux;
@@ -199,7 +210,7 @@ void triIteratifMinmaxLargeur(Minimax abr){
 		/* Effectue une action sur le noeud concerner */
 		affiche_sommet_hexa_graph(nodeCour -> config);
 
-		/* Enfile le fils gauche et droit si il existe */
+		/* Enfile les fils si ils en existe */
 		for(int i=0; i<nodeCour -> nb_fils; i++){
 			if(nodeCour -> fils[i] != NULL){
 				enfiler_2(file, nodeCour -> fils[i]);

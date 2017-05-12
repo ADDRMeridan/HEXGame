@@ -10,7 +10,7 @@
 #include <stdbool.h>
 
 #include "graphe.h"
-#include "ensemble.h"
+ #include "ensemble.h"
 
 /* Sommet */
 struct s_sommet{
@@ -40,7 +40,7 @@ struct s_Graphe{
 	Hexa* tab;
 };
 
-/*Liste*/
+/* Liste*/
 
 struct et_cellule{
 	Element elmt;

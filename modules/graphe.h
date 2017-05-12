@@ -1,15 +1,28 @@
+/*----------------------------------------------
+ *Structure de Donnée Graphe
+ *
+ *Auteur : MOHAMED Mourdas
+ *Date de modification : 09/05/2017
+ *---------------------------------------------*/
+
 #ifndef GRAPHE_H
 #define GRAPHE_H
-
 
 /* Couleur */
 #define TRANSPARANT 2
 #define BLANC 		1
 #define NOIR 		0
 
+/* ----------------------------------
+        Déclaration des types
+   --------------------------------*/
 
 typedef struct s_Graphe * Graphe;
+typedef struct s_hexa * Hexa;
 
+/* ----------------------------------
+            Constructeurs
+   --------------------------------*/
 
 /** 
  *  @brief Construit un Graphe Vide.
@@ -37,6 +50,12 @@ Graphe inite_graphe(int n);
  *
  */
 Graphe ajout_hexagone(Graphe graphe, int row, int colonne, int couleur);
+
+Graphe graphe_reduit( Graphe graphe );
+
+/* ----------------------------------
+            Accesseurs
+   --------------------------------*/
 
 /**
  *	@brief indique la taille d'un Graphe.
@@ -76,9 +95,6 @@ int couleur_hexagone(Graphe graphe, int row, int colonne);
  *
  */
 bool chaine_gagnante(Graphe graphe, int couleur);
-
-
-Graphe graphe_reduit( Graphe graphe );
 
 
 int distance_hexa(Graphe graphe, int row_1, int col_1, int row_2, int col_2);

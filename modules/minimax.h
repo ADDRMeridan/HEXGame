@@ -2,7 +2,7 @@
  *Structure de Donnée Minimax
  *
  *Auteur : MOHAMED Mourdas
- *Date de modification : 12/05/2017
+ *Date de modification : 13/05/2017
  *---------------------------------------------*/
 
 #ifndef MINIMAX_H
@@ -123,7 +123,8 @@ Node* root(Minimax m);
  */
 void triIteratifMinmaxLargeur(Minimax abr);
 
-void rbtree_export_dot(Node* t, FILE *file);
+
+void minimax_export_dot(Node* t, FILE *file);
 
 #endif
 

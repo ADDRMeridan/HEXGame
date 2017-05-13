@@ -1,3 +1,10 @@
+/*----------------------------------------------
+ *Auteur : MOHAMED Mourdas
+ *Dêpendance : ensemble, element_g, file2,
+ 	graphe
+ *Date de modification : 13/05/2017
+ *---------------------------------------------*/
+
 #include <stdlib.h>
 #include <assert.h>
 #include <stdio.h>
@@ -7,7 +14,7 @@
 #include "element_g.h"
 #include "ensemble.h"
 #include "minimax.h"
-#include "file_2.h"
+#include "file.h"
 
 struct node{
 	struct node * parent;
@@ -135,6 +142,39 @@ Ensemble successeur(Graphe config, int couleur){
 	return ens_g;
 }
 
+void minimax( Node * n ){
+	int min = 1;
+	int max = -1;
+	
+	if( n -> fils == NULL )
+	{	/* Si n est une feuille */
+
+		if( chaine_gagnante( n -> config, NOIR ) )
+			n -> valeur = 1;
+		else if( chaine_gagnante( n -> config, BLANC ) )
+			n -> valeur = -1;
+	}
+
+	else if( n -> fils )
+	{	/* Si n est un Noeud */
+
+		/* Recherche du minimum et du maximum */
+		for(int i=0; i<n -> nb_fils; i++){
+			if( n -> fils[i] -> valeur < min)
+				min = n -> fils[i] -> valeur;
+			if( n -> fils[i] -> valeur > max)
+				max = n -> fils[i] -> valeur;
+		}
+
+		/* Affectation de la valeur */
+		if( n -> couleur == NOIR ){
+			n -> valeur = min;
+		}
+		else{
+			n -> valeur = max;
+		}
+	}
+}
 
 Node* ajout_successeur(Node* n, Ensemble ensemble, int couleur){
 	
@@ -179,8 +219,9 @@ Node* ajout_successeur(Node* n, Ensemble ensemble, int couleur){
 			ajout_successeur(add, successeur( add -> config, NOIR), NOIR);
 		}
 
-		printf("-\n");
-		affiche_sommet_hexa_graph(add -> config);
+		minimax( add );
+		//printf("-\n");
+		//affiche_sommet_hexa_graph(add -> config);
 	}
 
 	return aux;
@@ -198,12 +239,11 @@ Minimax build(Minimax m, int n){
 }
 
 
-
 void triIteratifMinmaxLargeur(Minimax abr){
-	File_2 file;
+	File file;
 	Node* nodeCour = abr -> root;
 
-	file = initeFile_2();
+	file = initeFile();
 
 	/* Enfile la racine */
 	enfiler_2(file, nodeCour);
@@ -234,14 +274,14 @@ typedef struct s_queue {
 
 QueueOfBinaryTrees queue_create() {
 	QueueOfBinaryTrees f = (QueueOfBinaryTrees) malloc(sizeof(struct s_queue));
-	f->head = 0;
-	f->tail = 0;
+	f -> head = 0;
+	f -> tail = 0;
 	return f;
 }
 
 void queue_push(QueueOfBinaryTrees f, Node* a) {
-	f->queue[f->head] = a;
-	f->head = (f->head + 1) % MAXFILE;
+	f -> queue[f->head] = a;
+	f -> head = (f->head + 1) % MAXFILE;
 }
 
 Node* queue_pop(QueueOfBinaryTrees f) {
@@ -267,14 +307,14 @@ void printNode(Node* n, FILE *file){
 	char chaine[100];
 	chaine_hexa_graph( n -> config, chaine);
 	if(n -> couleur == BLANC)
-		fprintf(file, "\tn%d [fillcolor = ghostwhite, label=\"%s\"];\n",
-			n, chaine);
+		fprintf(file, "\tn%d [fillcolor = ghostwhite, label=\"%sminmax = %d\"];\n",
+			n, chaine, n -> valeur);
 	else if(n -> couleur == NOIR)
-		fprintf(file, "\tn%d [fillcolor = deepskyblue1, label=\"%s\"];\n",
-			n, chaine);
+		fprintf(file, "\tn%d [fillcolor = deepskyblue1, label=\"%sminmax = %d\"];\n",
+			n, chaine, n -> valeur);
 	else
-		fprintf(file, "\tn%d [fillcolor = gold1, label=\"%s\"];\n",
-			n, chaine);
+		fprintf(file, "\tn%d [fillcolor = gold1, label=\"%sminmax = %d\"];\n",
+			n, chaine, n -> valeur);
 
 	for(int i=0; i<n -> nb_fils; i++){
 		if(n -> fils[i] != NULL){
@@ -284,7 +324,7 @@ void printNode(Node* n, FILE *file){
 	}
 }
 
-void rbtree_export_dot(Node* t, FILE *file) {
+void minimax_export_dot(Node* t, FILE *file) {
 	QueueOfBinaryTrees q = queue_create();
 	fprintf(file, "digraph Minimax {\n\tgraph [\n\t\trankdir = LR\n\t\tbgcolor= aliceblue\n\t];\n\tnode [\n\t\tshape = doublecircle\n\t\tfontsize = \"10\"\n\t\tfontname=\"Harry P\"\n\t\tstyle = \"rounded,filled\"\n\t];\n\n");
 

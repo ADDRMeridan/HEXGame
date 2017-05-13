@@ -142,7 +142,6 @@ Graphe inite_graphe(int n){
 				hexa -> aretes[2] = NULL;
 			}
 
-
 			hexa -> aretes[6] = NULL;
 
 			if(pred_hexa != NULL)
@@ -848,61 +847,25 @@ bool connexion_forcer(Hexa u, Hexa v){
 	return false;
 }
 
-
-
-#define MAXFILE 4096
-typedef struct s_queue {
-	Hexa queue[MAXFILE];
-	int head;
-	int tail;
-} *QueueOfBinaryTrees;
-
-QueueOfBinaryTrees graphe_queue_create() {
-	QueueOfBinaryTrees f = (QueueOfBinaryTrees) malloc(sizeof(struct s_queue));
-	f->head = 0;
-	f->tail = 0;
-	return f;
-}
-
-void graphe_queue_push(QueueOfBinaryTrees f, Hexa a) {
-	f->queue[f->head] = a;
-	f->head = (f->head + 1) % MAXFILE;
-}
-
-Hexa graphe_queue_pop(QueueOfBinaryTrees f) {
-	Hexa a = f->queue[f->tail];
-	f->tail = (f->tail + 1) % MAXFILE;
-	return (a);
-}
-
-int graphe_queue_empty(QueueOfBinaryTrees f) {
-	return (f->tail == f->head);
-}
-
-void graphe_queue_delete(QueueOfBinaryTrees f) {
-	free(f);
-}
-
 void couleur(int i, char *color){
 	switch(i){
 		case 0:
 			strcpy(color, "black");
-			return ;
+			break ;
 		case 1:
 			strcpy(color, "cyan4");
-			return ;
+			break ;
 		case 2:
 			strcpy(color, "chartreuse3");
-			return ;
+			break ;
 		case 3:
 			strcpy(color, "brown2");
-			return ;
+			break ;
 		case 4:
 			strcpy(color, "gold1");
-			return ;
+			break ;
 		default:
 			strcpy(color, "deeppink2");
-			return ;
 	}
 }
 
@@ -929,8 +892,7 @@ void graphe_printNode(Hexa n, FILE *file){
 			
 			if( i == 0 ){
 				fprintf(file, "\t{rank=same n%d n%d}\n",
-				n, n -> aretes[i]);
-				
+					n, n -> aretes[i]);
 			}
 			couleur(i, color);
 
@@ -997,6 +959,5 @@ void chaine_hexa_graph(Graphe graphe, char* chaine){
 
 		}
 		strcat(chaine, "\n");
-		
 	}
 }

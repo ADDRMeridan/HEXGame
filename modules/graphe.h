@@ -181,6 +181,7 @@ int distance_hexagone_groupe( Hexa p, Hexa groupe);
  */
 bool hex_adjacent(Hexa hex_1, Hexa hex_2);
 
+
 void graphe_dot(Graphe g, char * name);
 
 /* */

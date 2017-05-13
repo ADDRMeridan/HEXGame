@@ -9,7 +9,7 @@
 #define GRAPHE_H
 
 /* Couleur */
-#define TRANSPARANT 	2
+#define TRANSPARANT	2
 #define BLANC 		1
 #define NOIR 		0
 
@@ -66,6 +66,18 @@ Graphe ajout_hexagone(Graphe graphe, int row, int colonne, int couleur);
 
 
 Graphe graphe_reduit( Graphe graphe );
+
+/**
+ *	@brief forme un groupe si les pion son adjacent.
+ *
+ *	@param hex_1 : premier hexagone concerner
+ *	@param hex_2 : second hexagone concerner
+ *
+ *  @return Hexa : deux sommet dans un groupe si adjacent, sinon deux sommet
+ 		distinct.
+ *
+ */
+void ajout_dans_groupe(Hexa hex_1, Hexa hex_2);
 
 /* ----------------------------------
             Accesseurs
@@ -168,6 +180,8 @@ int distance_hexagone_groupe( Hexa p, Hexa groupe);
  *
  */
 bool hex_adjacent(Hexa hex_1, Hexa hex_2);
+
+void graphe_dot(Graphe g, char * name);
 
 /* */
 void affiche_sommet_hexa(Graphe graphe);

@@ -13,6 +13,7 @@ struct node{
 	struct node * parent;
 	struct node ** fils;
 	Graphe config;
+	int couleur;
 	int valeur;
 	int nb_fils;
 };
@@ -51,6 +52,7 @@ Minimax inite_minimax(int n){
 	m -> root -> config = inite_graphe(n);
 	m -> root -> valeur = 1;
 	m -> root -> nb_fils = 0;
+	m -> root -> couleur = TRANSPARANT;
 	m -> root -> parent = NULL;
 	m -> root -> fils = NULL;
 
@@ -163,6 +165,8 @@ Node* ajout_successeur(Node* n, Ensemble ensemble, int couleur){
 		el = element( ensemble, i );
 		add -> config = el;
 
+		add -> couleur = couleur;
+
 		add -> fils = NULL;
 		add -> parent = aux; 
 
@@ -218,4 +222,81 @@ void triIteratifMinmaxLargeur(Minimax abr){
 		}
 		printf("\n");
 	}
+}
+
+
+#define MAXFILE 4096
+typedef struct s_queue {
+	Node* queue[MAXFILE];
+	int head;
+	int tail;
+} *QueueOfBinaryTrees;
+
+QueueOfBinaryTrees queue_create() {
+	QueueOfBinaryTrees f = (QueueOfBinaryTrees) malloc(sizeof(struct s_queue));
+	f->head = 0;
+	f->tail = 0;
+	return f;
+}
+
+void queue_push(QueueOfBinaryTrees f, Node* a) {
+	f->queue[f->head] = a;
+	f->head = (f->head + 1) % MAXFILE;
+}
+
+Node* queue_pop(QueueOfBinaryTrees f) {
+	Node* a = f->queue[f->tail];
+	f->tail = (f->tail + 1) % MAXFILE;
+	return (a);
+}
+
+int queue_empty(QueueOfBinaryTrees f) {
+	return (f->tail == f->head);
+}
+
+void queue_delete(QueueOfBinaryTrees f) {
+	free(f);
+}
+
+
+/* -------------------------------------------- */
+/*	Export the tree as a dot file				*/
+/* -------------------------------------------- */
+
+void printNode(Node* n, FILE *file){
+	
+	if(n -> couleur == BLANC)
+		fprintf(file, "\tn%d [fillcolor = ghostwhite, label=\"%d\"];\n",
+			n, n);
+	else if(n -> couleur == NOIR)
+		fprintf(file, "\tn%d [fillcolor = deepskyblue1, label=\"%d\"];\n",
+			n, n);
+	else
+		fprintf(file, "\tn%d [fillcolor = gold1, label=\"%d\"];\n",
+			n, n);
+
+	for(int i=0; i<n -> nb_fils; i++){
+		if(n -> fils[i] != NULL){
+			fprintf(file, "\tn%d -> n%d [penwidth = 2]\n",
+				n, n -> fils[i]);
+		}
+	}
+}
+
+void rbtree_export_dot(Node* t, FILE *file) {
+	QueueOfBinaryTrees q = queue_create();
+	fprintf(file, "digraph Minimax {\n\tgraph [\n\t\trankdir = LR\n\t\tbgcolor= aliceblue\n\t];\n\tnode [\n\t\tshape = doublecircle\n\t\tfontsize = \"6\"\n\t\tstyle = \"rounded,filled\"\n\t];\n\n");
+
+	queue_push(q, t);
+	while (!queue_empty(q)) {
+		t = queue_pop(q);
+		printNode(t, file);
+		for(int i=0; i<t -> nb_fils; i++){
+			if(t -> fils[i] != NULL){
+				queue_push(q, t -> fils[i]);
+			}
+		}
+	}
+	
+	fprintf(file, "\n}\n");
 }

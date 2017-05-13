@@ -123,6 +123,8 @@ Node* root(Minimax m);
  */
 void triIteratifMinmaxLargeur(Minimax abr);
 
+void rbtree_export_dot(Node* t, FILE *file);
+
 #endif
 
 

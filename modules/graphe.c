@@ -8,6 +8,7 @@
 #include <assert.h>
 #include <stdio.h>
 #include <stdbool.h>
+#include <string.h>
 
 #include "graphe.h"
 #include "ensemble.h"
@@ -582,11 +583,11 @@ void affiche_sommet_hexa_graph(Graphe graphe){
 			if(col == hexa -> sommet .col && row == hexa -> sommet.row){
 
 				if( hexa->couleur == 2 )
-					printf("T    ", hexa -> sommet.row, hexa -> sommet.col);
+					printf("T    ");
 				else if( hexa->couleur == 1 )
-					printf("B    ", hexa -> sommet.row, hexa -> sommet.col);
+					printf("B    ");
 				else
-					printf("N    ", hexa -> sommet.row, hexa -> sommet.col);
+					printf("N    ");
 
 				/* Passe à l'Hexagone à sa droite (colonne suivante) */
 				if( col + 1 < n && hexa -> aretes[0] != NULL )
@@ -845,3 +846,115 @@ bool connexion_forcer(Hexa u, Hexa v){
 
 	return false;
 }
+
+
+
+#define MAXFILE 4096
+typedef struct s_queue {
+	Hexa queue[MAXFILE];
+	int head;
+	int tail;
+} *QueueOfBinaryTrees;
+
+QueueOfBinaryTrees graphe_queue_create() {
+	QueueOfBinaryTrees f = (QueueOfBinaryTrees) malloc(sizeof(struct s_queue));
+	f->head = 0;
+	f->tail = 0;
+	return f;
+}
+
+void graphe_queue_push(QueueOfBinaryTrees f, Hexa a) {
+	f->queue[f->head] = a;
+	f->head = (f->head + 1) % MAXFILE;
+}
+
+Hexa graphe_queue_pop(QueueOfBinaryTrees f) {
+	Hexa a = f->queue[f->tail];
+	f->tail = (f->tail + 1) % MAXFILE;
+	return (a);
+}
+
+int graphe_queue_empty(QueueOfBinaryTrees f) {
+	return (f->tail == f->head);
+}
+
+void graphe_queue_delete(QueueOfBinaryTrees f) {
+	free(f);
+}
+
+
+/* -------------------------------------------- */
+/*	Export the tree as a dot file				*/
+/* -------------------------------------------- */
+
+void graphe_printNode(Hexa n, FILE *file){
+	
+	if(n -> couleur == BLANC)
+		fprintf(file, "\tn%d [style=filled, fillcolor=ghostwhite, label=\"%d , %d\"];\n",
+			n, n -> sommet.row, n -> sommet.col);
+	else if(n -> couleur == NOIR)
+		fprintf(file, "\tn%d [style=filled, fillcolor= black, fontcolor=gold1, label=\"%d , %d\"];\n",
+			n, n -> sommet.row, n -> sommet.col);
+	else
+		fprintf(file, "\tn%d [style=filled, fillcolor= lightskyblue1, fontcolor=red, label=\"%d , %d\"];\n",
+			n, n -> sommet.row, n -> sommet.col);
+	
+	char color[20];
+
+	for(int i=0; i<6; i++){
+		if(n -> aretes[i] != NULL){
+			
+			if( i == 0 ){
+				fprintf(file, "\t{rank=same n%d n%d}\n",
+				n, n -> aretes[i]);
+				strcpy(color, "black");
+			}
+			else if( i == 1){
+				strcpy(color, "cyan4");
+
+			}
+			else if( i == 2){
+				strcpy(color, "chartreuse3");
+			}
+			else if( i == 3){
+				strcpy(color, "brown2");
+			}
+			else if( i == 4){
+				strcpy(color, "gold1");
+			}
+			else{
+				strcpy(color, "deeppink2");
+			}
+			fprintf(file, "\tn%d -> n%d [penwidth = 2, label=\"%d\" color=%s]\n",
+				n, n -> aretes[i], i, color);
+		}
+	}
+}
+
+void graphe_export_dot(Graphe g, FILE *file) {
+
+	fprintf(file, "digraph Graphe {\n\tgraph [\n\tbgcolor= aliceblue\n\tranksep=0.5];\n\tnode [shape = doublecircle, fon_size = 6];\n\n");
+	int n = size_graphe(g);
+
+	for(int i=0; i<n*n; i++){
+		graphe_printNode(g -> tab[i], file);
+	}
+	
+	fprintf(file, "\n}\n");
+}
+
+void graphe_dot(Graphe g, char * name){
+	FILE * file = NULL;
+    file = fopen(name, "w");
+
+    printf("--%s\n", name);
+
+    if( file == NULL ){
+        printf("Erreur Lecture fichier \n");
+        exit(1);
+    }
+
+    graphe_export_dot(g , file);
+
+    fclose(file);
+} 

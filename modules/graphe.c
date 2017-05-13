@@ -417,13 +417,14 @@ bool chaine_gagnante(Graphe graphe, int couleur){
 	   le bord_2 Exemple w1 et w2 sont dans un meme groupe */
 	while( i<n && !gagnant ){
 
-		if( bord_1->aretes[i]->aretes[6] != NULL ){
+		if( bord_1 -> aretes[i] -> aretes[6] != NULL ){
 
 			e = 0;
 
 			while( e<n && !gagnant ){
 
-				if( bord_2 -> aretes[e] -> aretes[6] != NULL && bord_2 -> aretes[e] -> aretes[6] == bord_1 -> aretes[i] -> aretes[6] )
+				if( bord_2 -> aretes[e] -> aretes[6] != NULL && bord_2 -> aretes[e] -> aretes[6] == bord_1 -> aretes[i] -> aretes[6] 
+					&& couleur_sommet( bord_2 -> aretes[e] -> aretes[6] ) == couleur )
 					gagnant = true;
 
 				e++;
@@ -882,6 +883,28 @@ void graphe_queue_delete(QueueOfBinaryTrees f) {
 	free(f);
 }
 
+void couleur(int i, char *color){
+	switch(i){
+		case 0:
+			strcpy(color, "black");
+			return ;
+		case 1:
+			strcpy(color, "cyan4");
+			return ;
+		case 2:
+			strcpy(color, "chartreuse3");
+			return ;
+		case 3:
+			strcpy(color, "brown2");
+			return ;
+		case 4:
+			strcpy(color, "gold1");
+			return ;
+		default:
+			strcpy(color, "deeppink2");
+			return ;
+	}
+}
 
 /* -------------------------------------------- */
 /*	Export the tree as a dot file				*/
@@ -907,24 +930,10 @@ void graphe_printNode(Hexa n, FILE *file){
 			if( i == 0 ){
 				fprintf(file, "\t{rank=same n%d n%d}\n",
 				n, n -> aretes[i]);
-				strcpy(color, "black");
+				
 			}
-			else if( i == 1){
-				strcpy(color, "cyan4");
+			couleur(i, color);
 
-			}
-			else if( i == 2){
-				strcpy(color, "chartreuse3");
-			}
-			else if( i == 3){
-				strcpy(color, "brown2");
-			}
-			else if( i == 4){
-				strcpy(color, "gold1");
-			}
-			else{
-				strcpy(color, "deeppink2");
-			}
 			fprintf(file, "\tn%d -> n%d [penwidth = 2, label=\"%d\" color=%s]\n",
 				n, n -> aretes[i], i, color);
 		}
@@ -958,3 +967,36 @@ void graphe_dot(Graphe g, char * name){
 
     fclose(file);
 } 
+
+void chaine_hexa_graph(Graphe graphe, char* chaine){
+	strcpy(chaine, "");
+	int n = size_graphe( graphe );
+	
+	for( int row=0; row<n; row++ ){
+		for (int i = 0; i < row; ++i)
+			strcat(chaine, "\t");
+
+		Hexa hexa = graphe -> W1 -> aretes[row];
+
+		for( int col=0; col<n; col++ ){
+			if(col == hexa -> sommet .col && row == hexa -> sommet.row){
+
+				if( hexa->couleur == 2 )
+					strcat(chaine, "T    ");
+				else if( hexa->couleur == 1 )
+					strcat(chaine, "B    ");
+				else
+					strcat(chaine, "N    ");
+
+				/* Passe à l'Hexagone à sa droite (colonne suivante) */
+				if( col + 1 < n && hexa -> aretes[0] != NULL )
+					hexa = hexa -> aretes[0];
+				else
+					col = n;
+			}
+
+		}
+		strcat(chaine, "\n");
+		
+	}
+}

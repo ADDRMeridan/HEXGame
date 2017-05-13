@@ -116,7 +116,7 @@ Ensemble successeur(Graphe config, int couleur){
 
 	Hexa sommet;
 
-	if( chaine_gagnante( config, NOIR) || chaine_gagnante( config, BLANC) )
+	if( chaine_gagnante( config, NOIR ) || chaine_gagnante( config, BLANC ) )
 		return ens_g;
 
 	n = size_graphe(config);
@@ -161,7 +161,7 @@ Node* ajout_successeur(Node* n, Ensemble ensemble, int couleur){
 
 		add -> nb_fils = 0;
 		add -> valeur = 1;
-		//printf("cardinal == %d i == %d c==%d\n", cardinal(ensemble), i, c );
+
 		el = element( ensemble, i );
 		add -> config = el;
 
@@ -264,16 +264,17 @@ void queue_delete(QueueOfBinaryTrees f) {
 /* -------------------------------------------- */
 
 void printNode(Node* n, FILE *file){
-	
+	char chaine[100];
+	chaine_hexa_graph( n -> config, chaine);
 	if(n -> couleur == BLANC)
-		fprintf(file, "\tn%d [fillcolor = ghostwhite, label=\"%d\"];\n",
-			n, n);
+		fprintf(file, "\tn%d [fillcolor = ghostwhite, label=\"%s\"];\n",
+			n, chaine);
 	else if(n -> couleur == NOIR)
-		fprintf(file, "\tn%d [fillcolor = deepskyblue1, label=\"%d\"];\n",
-			n, n);
+		fprintf(file, "\tn%d [fillcolor = deepskyblue1, label=\"%s\"];\n",
+			n, chaine);
 	else
-		fprintf(file, "\tn%d [fillcolor = gold1, label=\"%d\"];\n",
-			n, n);
+		fprintf(file, "\tn%d [fillcolor = gold1, label=\"%s\"];\n",
+			n, chaine);
 
 	for(int i=0; i<n -> nb_fils; i++){
 		if(n -> fils[i] != NULL){
@@ -285,7 +286,7 @@ void printNode(Node* n, FILE *file){
 
 void rbtree_export_dot(Node* t, FILE *file) {
 	QueueOfBinaryTrees q = queue_create();
-	fprintf(file, "digraph Minimax {\n\tgraph [\n\t\trankdir = LR\n\t\tbgcolor= aliceblue\n\t];\n\tnode [\n\t\tshape = doublecircle\n\t\tfontsize = \"6\"\n\t\tstyle = \"rounded,filled\"\n\t];\n\n");
+	fprintf(file, "digraph Minimax {\n\tgraph [\n\t\trankdir = LR\n\t\tbgcolor= aliceblue\n\t];\n\tnode [\n\t\tshape = doublecircle\n\t\tfontsize = \"10\"\n\t\tfontname=\"Harry P\"\n\t\tstyle = \"rounded,filled\"\n\t];\n\n");
 
 	queue_push(q, t);
 	while (!queue_empty(q)) {

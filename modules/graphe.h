@@ -188,5 +188,7 @@ void affiche_sommet_hexa(Graphe graphe);
 
 void affiche_sommet_hexa_graph(Graphe graphe);
 
+void chaine_hexa_graph(Graphe graphe, char* chaine);
+
 
 #endif

@@ -9,7 +9,7 @@
 #define MINIMAX_H
 
 #include "graphe.h"
-#include "element_g.h"
+#include "element_graphe.h"
 #include "ensemble.h"
 
 /* ----------------------------------
@@ -27,18 +27,18 @@ typedef struct node Node;
 /**
  *	@brief initialise un abre minimaxe.
  *
- *	@param n : taille du graphe des differente config du minimax
+ *	@param n : taille du graphe des differente minimax_config du minimax
  *
  *  @return Minimax : un arbre avec une configuration initiale c0.
  *
  */
-Minimax inite_minimax(int n);
+Minimax minimax_initialisation(int n);
 
 /**
- *	@brief ajoute des succeseur (fils) nouvel config dans un noeud fourni.
+ *	@brief ajoute des succeseur (fils) nouvel minimax_config dans un noeud fourni.
  *
  *	@param m : le noeud concerner
- *	@param ensemble : l'ensemble contenant les nouvel config a ajouter.
+ *	@param ensemble : l'ensemble contenant les nouvel minimax_config a ajouter.
  *	@param couleur : la couleur que l'on shouaite associer au nouvel element, 
  		la configuration.
  *
@@ -47,27 +47,27 @@ Minimax inite_minimax(int n);
  *  @return Node : un noeud avec ces nouveau fils, si elle peut en avoir.
  *
  */
-Node* ajout_successeur(Node* m, Ensemble ensemble, int couleur);
+Node* minimax_ajout_successeur(Node* m, Ensemble ensemble, int couleur);
 
 /**
  *	@brief construit un abre minimaxe.
  *
  *	@param m : minimax a partir du quel on shouaite construire, 
  		ajouter les nouveau Noeud.
- *	@param n : taille du graphe des differente config du minimax
+ *	@param n : taille du graphe des differente minimax_config du minimax
  *
  *  @return Minimax : un arbre avec une configuration initiale c0.
  *
  */
-Minimax build(Minimax m, int n);
+Minimax minimax_build(Minimax m, int n);
 
 
 /**
- *	@brief une fonction successeur qui associe à chaque 
+ *	@brief une fonction minimax_successeur qui associe à chaque 
  		conﬁguration de jeu, l’ensemble des conﬁgurations accessibles 
  		en un coup.
  *
- *	@param config : une configaration (graphe).
+ *	@param minimax_config : une configaration (graphe).
  *	@param couleur : la couleur que l'on shouaite associer au nouvel element, 
  		la configuration.
  *
@@ -77,7 +77,7 @@ Minimax build(Minimax m, int n);
  		en un coup.
  *
  */
-Ensemble successeur(Graphe config, int couleur);
+Ensemble minimax_successeur(Graphe minimax_config, int couleur);
 
 /* ----------------------------------
             Accesseurs
@@ -89,15 +89,15 @@ Ensemble successeur(Graphe config, int couleur);
  *	@param n : Noeud concerner.
  *
  */
-Graphe config(Node* n);
+Graphe minimax_config(Node* n);
 
 /**
- *	@brief fournie la valeur d'un noeud
+ *	@brief fournie la minimax_valeur d'un noeud
  *
  *	@param n : Noeud concerner.
  *
  */
-int valeur(Node n);
+int minimax_valeur(Node n);
 
 /**
  *	@brief fournie le nombre de fils, d'un noeud
@@ -105,7 +105,7 @@ int valeur(Node n);
  *	@param n : Noeud concerner.
  *
  */
-int nombre_fils(Node n);
+int minimax_nombre_fils(Node n);
 
 /**
  *	@brief fournie la racine d'un abre Minimax
@@ -113,7 +113,7 @@ int nombre_fils(Node n);
  *	@param m : arbre concerner.
  *
  */
-Node* root(Minimax m);
+Node* minimax_root(Minimax m);
 
 /**
  *	@brief affiche les noeud de l'abre minimax en parcourant l'abre en largeur
@@ -121,18 +121,44 @@ Node* root(Minimax m);
  *	@param abr : l'abre minimax concerner.
  *
  */
-void triIteratifMinmaxLargeur(Minimax abr);
+void minimax_tri_iteratif_largeur(Minimax abr);
 
-
+/**
+ *	@brief ecris un fichier dot de la structure d'un Noeud, corespondant a un arbre minimax
+ *
+ *	@param t : le Noeud concerner
+ *	@param file : le fichier dans lequel ecrire
+ *
+ */
 void minimax_export_dot(Node* t, FILE *file);
 
-void ligne_cole(int n, int num_case, int *ligne, int *col);
+/**
+ *	@brief fourni la ligne et la colonne, corespondant a un numero de case donné
+ *
+ *	@param n : la taille du tableau de case concerner
+ *	@param num_case : le numero de la case concerner
+ *	@param ligne : ou l'on shouaite recupere la ligne
+ *	@param col : ou l'on shouaite recupere la colonne
+ *
+ *	@return ligne, col : deux entier corespondant a la ligne et a la colonne
+ */
+void minimax_ligne_colonne(int n, int num_case, int *ligne, int *col);
 
-bool graphe_identique(Graphe g, Graphe h);
+/**
+ *	@brief verifie si d'un graphe son identique
+ *
+ *	@param g : premier graphe
+ *	@param h : second graphe
+ *
+ *	@return bool : true si il sont identique, sinon false
+ *
+ */
+bool minimax_graphe_identique(Graphe g, Graphe h);
 
-Node* search_graphe(Minimax abr, Graphe g, int nivau);
 
-Graphe search_config_gagnant(Node* n, int valeur_gagnante);
+Node* minimax_search_graphe(Minimax abr, Graphe g, int nivau);
+
+Graphe minimax_search_config_gagnant(Node* n, int valeur_gagnante);
 
 #endif
 

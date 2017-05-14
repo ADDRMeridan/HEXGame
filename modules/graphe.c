@@ -13,6 +13,8 @@
 #include "graphe.h"
 #include "ensemble.h"
 
+typedef Hexa Element;
+
 /* Sommet */
 struct s_sommet{
 	int col;
@@ -39,7 +41,7 @@ struct s_Graphe{
 	Hexa B2;
 	int size;
 
-	/* Pour amelioré la complexité de recherche d'un hexagone */
+	/* Pour amelioré la complexité de recherche d'un graphe_hexagone */
 	Hexa* tab;
 };
 
@@ -61,12 +63,12 @@ struct et_liste{
 typedef struct et_liste Liste;
 
 /* */
-Hexa colorie_sommet(Hexa hex, int couleur){
+Hexa graphe_colorie_sommet(Hexa hex, int couleur){
 	hex -> couleur = couleur;
 	return hex;
 }
 
-Graphe inite_graphe(int n){
+Graphe graphe_initialisation(int n){
 	Graphe graphe;
 	Hexa hexa; 
 	Hexa pred_hexa;
@@ -119,7 +121,7 @@ Graphe inite_graphe(int n){
 	/* Initialise les numero de ligne et de colonne des sommets */
 	for( int row=0; row<n; row++ ){
 
-		/* hexagone (Sommet) sur la 1er colonne de chaque ligne */
+		/* graphe_hexagone (Sommet) sur la 1er colonne de chaque ligne */
 		hexa = (Hexa) malloc( sizeof( struct s_hexa ) );
 		assert(hexa != NULL);
 
@@ -152,7 +154,7 @@ Graphe inite_graphe(int n){
 			hexa -> sommet.col = col;
 			hexa -> sommet.row = row;
 
-			colorie_sommet(hexa, TRANSPARANT);
+			graphe_colorie_sommet(hexa, TRANSPARANT);
 
 			graphe -> tab[graphe -> size*row+col] = hexa;
 
@@ -218,46 +220,46 @@ Graphe inite_graphe(int n){
 }
 
 /*  */
-void ligne_col(Graphe g, int num_case, int *ligne, int *col){
-    assert( num_case < (g -> size * g -> size) && num_case >= 0 );
+void graphe_ligne_colonne(Graphe g, int graphe_num_case, int *ligne, int *col){
+    assert( graphe_num_case < (g -> size * g -> size) && graphe_num_case >= 0 );
     
-    *ligne = num_case / g -> size;
-    *col = num_case % g -> size;
+    *ligne = graphe_num_case / g -> size;
+    *col = graphe_num_case % g -> size;
 }
 
 /*  */
-int num_case(Graphe g, int ligne, int col){
+int graphe_num_case(Graphe g, int ligne, int col){
     assert( ligne < g -> size && ligne >= 0 && col < g -> size && col >= 0 );
     
     return g -> size * ligne + col;
 }
 
-int size_graphe(Graphe graphe){
+int graphe_size(Graphe graphe){
 	return graphe -> size;
 }
 
-int couleur_sommet(Hexa hex){
+int graphe_couleur_sommet(Hexa hex){
 	return hex -> couleur;
 }
 
-Hexa hexagone(Graphe graphe, int row, int colonne){
-	int n = size_graphe(graphe);
+Hexa graphe_hexagone(Graphe graphe, int row, int colonne){
+	int n = graphe_size(graphe);
 	assert( row >= 0 && row < n && colonne >= 0 && colonne < n );
-	Hexa hexa = graphe -> tab[num_case(graphe, row, colonne)];
+	Hexa hexa = graphe -> tab[graphe_num_case(graphe, row, colonne)];
 	return hexa;
 }
 
-int couleur_hexagone(Graphe graphe, int row, int colonne){
-	int n = size_graphe(graphe);
+int graphe_couleur_hexagone(Graphe graphe, int row, int colonne){
+	int n = graphe_size(graphe);
 	assert( row >= 0 && row < n && colonne >= 0 && colonne < n );
 
-	Hexa hexa = hexagone(graphe, row, colonne);
+	Hexa hexa = graphe_hexagone(graphe, row, colonne);
 
-	return couleur_sommet( hexa );
+	return graphe_couleur_sommet( hexa );
 }
 
 /* */
-bool hex_adjacent(Hexa hex_1, Hexa hex_2){
+bool graphe_sommet_adjacent(Hexa hex_1, Hexa hex_2){
 
 	/* Verifie que l'une des aretes de hex_1 pointe bien vers hex_2 */
 	for(int i=0; i<6; i++){
@@ -273,89 +275,89 @@ bool hex_adjacent(Hexa hex_1, Hexa hex_2){
 }
 
 /* */
-void ajout_dans_groupe(Hexa hex_1, Hexa hex_2){
+void graphe_ajout_dans_groupe(Hexa hex_1, Hexa hex_2){
 
-	Hexa groupe = NULL;
+	Hexa graphe_groupe = NULL;
 	Hexa groupe_2;
 	int nb_hexa_groupe_2;
 
-	if( hex_1 != NULL && hex_2 != NULL && hex_adjacent(hex_1, hex_2) && couleur_sommet(hex_1) != TRANSPARANT && couleur_sommet(hex_1) == couleur_sommet(hex_2) ){
+	if( hex_1 != NULL && hex_2 != NULL && graphe_sommet_adjacent(hex_1, hex_2) && graphe_couleur_sommet(hex_1) != TRANSPARANT && graphe_couleur_sommet(hex_1) == graphe_couleur_sommet(hex_2) ){
 		//printf("-1\n");
-		/* Si ils n'appartiennent a aucun groupe */
+		/* Si ils n'appartiennent a aucun graphe_groupe */
 		if( hex_1 -> aretes[6] == NULL && hex_2 -> aretes[6] == NULL ){
-			//printf("--1 c %d \n", couleur_sommet(hex_1) );
-			groupe = (Hexa) malloc( sizeof(struct s_hexa) );
-			assert( groupe != NULL );
+			//printf("--1 c %d \n", graphe_couleur_sommet(hex_1) );
+			graphe_groupe = (Hexa) malloc( sizeof(struct s_hexa) );
+			assert( graphe_groupe != NULL );
 
-			groupe -> aretes = (Hexa*) malloc( 2 * sizeof(Hexa) );
-			assert( groupe -> aretes != NULL );
+			graphe_groupe -> aretes = (Hexa*) malloc( 2 * sizeof(Hexa) );
+			assert( graphe_groupe -> aretes != NULL );
 
-			groupe -> aretes[0] = hex_1;
-			groupe -> aretes[1] = hex_2;
+			graphe_groupe -> aretes[0] = hex_1;
+			graphe_groupe -> aretes[1] = hex_2;
 
-			hex_1 -> aretes[6] = groupe;
-			hex_2 -> aretes[6] = groupe;
+			hex_1 -> aretes[6] = graphe_groupe;
+			hex_2 -> aretes[6] = graphe_groupe;
 
-			assert( groupe -> aretes[0] != NULL );
+			assert( graphe_groupe -> aretes[0] != NULL );
 
-			groupe -> nb_aretes = 2;
-			groupe -> couleur = couleur_sommet(hex_1);
+			graphe_groupe -> nb_aretes = 2;
+			graphe_groupe -> couleur = graphe_couleur_sommet(hex_1);
 
 		}
 
-		/* Si hex_2 est deja dans un groupe mais pas hex_1 */
+		/* Si hex_2 est deja dans un graphe_groupe mais pas hex_1 */
 		else if( hex_2 -> aretes[6] != NULL && hex_1 -> aretes[6] == NULL ){
-			//printf("--2 %d \n", couleur_sommet(hex_1) );
-			groupe = hex_2 -> aretes[6];
+			//printf("--2 %d \n", graphe_couleur_sommet(hex_1) );
+			graphe_groupe = hex_2 -> aretes[6];
 
-			groupe -> aretes = (Hexa*) realloc(groupe -> aretes, ( groupe -> nb_aretes + 1 ) * sizeof(Hexa) );
-			assert( groupe -> aretes != NULL );
+			graphe_groupe -> aretes = (Hexa*) realloc(graphe_groupe -> aretes, ( graphe_groupe -> nb_aretes + 1 ) * sizeof(Hexa) );
+			assert( graphe_groupe -> aretes != NULL );
 
-			groupe -> aretes[groupe -> nb_aretes] = hex_1;
-			hex_1 -> aretes[6] = groupe;
+			graphe_groupe -> aretes[graphe_groupe -> nb_aretes] = hex_1;
+			hex_1 -> aretes[6] = graphe_groupe;
 
-			groupe -> nb_aretes++;
+			graphe_groupe -> nb_aretes++;
 		}
 
-		/* Si hex_1 est deja dans un groupe mais pas hex_2 */
+		/* Si hex_1 est deja dans un graphe_groupe mais pas hex_2 */
 		else if( hex_1 -> aretes[6] != NULL && hex_2 -> aretes[6] == NULL ){
-			//printf("--3 %d \n", couleur_sommet(hex_1) );
-			groupe = hex_1 -> aretes[6];
+			//printf("--3 %d \n", graphe_couleur_sommet(hex_1) );
+			graphe_groupe = hex_1 -> aretes[6];
 
-			groupe -> aretes = realloc(groupe->aretes, groupe -> nb_aretes+1 * sizeof(Hexa) );
-			assert( groupe -> aretes != NULL );
+			graphe_groupe -> aretes = realloc(graphe_groupe->aretes, graphe_groupe -> nb_aretes+1 * sizeof(Hexa) );
+			assert( graphe_groupe -> aretes != NULL );
 
-			groupe -> aretes[groupe -> nb_aretes] = hex_2;
-			hex_2 -> aretes[6] = groupe;
+			graphe_groupe -> aretes[graphe_groupe -> nb_aretes] = hex_2;
+			hex_2 -> aretes[6] = graphe_groupe;
 
-			groupe -> nb_aretes++;
+			graphe_groupe -> nb_aretes++;
 		}
 
-		/* Si hex_1 et hex_2 sont deja dans un groupe */
+		/* Si hex_1 et hex_2 sont deja dans un graphe_groupe */
 		else if( hex_1 -> aretes[6] != NULL && hex_2 -> aretes[6] != NULL && hex_2 -> aretes[6] != hex_1 -> aretes[6]){
 			//printf("--4\n");
-			/* Privilégie le groupe de plus grande taille */
+			/* Privilégie le graphe_groupe de plus grande taille */
 			if( hex_1 -> aretes[6] -> nb_aretes > hex_2 -> aretes[6] -> nb_aretes ){
-				groupe = hex_1 -> aretes[6];
+				graphe_groupe = hex_1 -> aretes[6];
 				groupe_2 = hex_2 -> aretes[6];
 			}
 			else{
-				groupe = hex_2 -> aretes[6];
+				graphe_groupe = hex_2 -> aretes[6];
 				groupe_2 = hex_1 -> aretes[6];
 			}
 
 			nb_hexa_groupe_2 = groupe_2 -> nb_aretes;
 
-			groupe -> aretes = (Hexa*) realloc(groupe -> aretes, ( groupe -> nb_aretes + groupe_2 -> nb_aretes ) * sizeof(Hexa) );
-			assert( groupe -> aretes != NULL );
+			graphe_groupe -> aretes = (Hexa*) realloc(graphe_groupe -> aretes, ( graphe_groupe -> nb_aretes + groupe_2 -> nb_aretes ) * sizeof(Hexa) );
+			assert( graphe_groupe -> aretes != NULL );
 
-			/* Ajout des element du groupe 2 dans le groupe 1 */
-			for( int i=groupe -> nb_aretes; i<( groupe -> nb_aretes + groupe_2 -> nb_aretes ); i++ ){
-				groupe -> aretes[i] = groupe_2 -> aretes[i - groupe -> nb_aretes];
-				groupe -> aretes[i] -> aretes[6] = groupe;
+			/* Ajout des element du graphe_groupe 2 dans le graphe_groupe 1 */
+			for( int i=graphe_groupe -> nb_aretes; i<( graphe_groupe -> nb_aretes + groupe_2 -> nb_aretes ); i++ ){
+				graphe_groupe -> aretes[i] = groupe_2 -> aretes[i - graphe_groupe -> nb_aretes];
+				graphe_groupe -> aretes[i] -> aretes[6] = graphe_groupe;
 			}
 
-			/* Suppression du groupe 2 */
+			/* Suppression du graphe_groupe 2 */
 			for( int i=groupe_2 -> nb_aretes-1; i>=0; i-- ){
 				groupe_2 -> aretes[i] = NULL;
 				free( groupe_2 -> aretes[i] );
@@ -363,7 +365,7 @@ void ajout_dans_groupe(Hexa hex_1, Hexa hex_2){
 			groupe_2 = NULL;
 			free( groupe_2 );
 
-			groupe -> nb_aretes += nb_hexa_groupe_2;
+			graphe_groupe -> nb_aretes += nb_hexa_groupe_2;
 		}
 
 	}
@@ -371,20 +373,20 @@ void ajout_dans_groupe(Hexa hex_1, Hexa hex_2){
 }
 
 /* */
-Graphe ajout_hexagone( Graphe graphe, int row, int colonne, int couleur){
+Graphe graphe_ajout_hexagone( Graphe graphe, int row, int colonne, int couleur){
 
-	int n = size_graphe(graphe);
+	int n = graphe_size(graphe);
 
 	assert( row >= 0 && row < n && colonne >= 0 && colonne < n );
 	assert( couleur == NOIR || couleur == BLANC );
 
-	Hexa hexa = hexagone(graphe, row, colonne);
+	Hexa hexa = graphe_hexagone(graphe, row, colonne);
 
-	assert( couleur_sommet( hexa ) == TRANSPARANT );
-	hexa = colorie_sommet(hexa, couleur);
+	assert( graphe_couleur_sommet( hexa ) == TRANSPARANT );
+	hexa = graphe_colorie_sommet(hexa, couleur);
 
 	for(int i=0; i<6; i++)
-		ajout_dans_groupe( hexa, hexa -> aretes[i] );
+		graphe_ajout_dans_groupe( hexa, hexa -> aretes[i] );
 	
 	//printf("[%d,%d]-- \n", hexa->sommet.row, hexa->sommet.col);
 
@@ -392,9 +394,9 @@ Graphe ajout_hexagone( Graphe graphe, int row, int colonne, int couleur){
 }
 
 
-bool chaine_gagnante(Graphe graphe, int couleur){
+bool graphe_chaine_gagnante(Graphe graphe, int couleur){
 
-	int n = size_graphe( graphe );
+	int n = graphe_size( graphe );
 	int i,e;
 	bool gagnant = false;
 	
@@ -414,8 +416,8 @@ bool chaine_gagnante(Graphe graphe, int couleur){
 
 	i=0;
 
-	/* Verifie que le bord_1 appartient à un meme groupe que 
-	   le bord_2 Exemple w1 et w2 sont dans un meme groupe */
+	/* Verifie que le bord_1 appartient à un meme graphe_groupe que 
+	   le bord_2 Exemple w1 et w2 sont dans un meme graphe_groupe */
 	while( i<n && !gagnant ){
 
 		if( bord_1 -> aretes[i] -> aretes[6] != NULL ){
@@ -425,7 +427,7 @@ bool chaine_gagnante(Graphe graphe, int couleur){
 			while( e<n && !gagnant ){
 
 				if( bord_2 -> aretes[e] -> aretes[6] != NULL && bord_2 -> aretes[e] -> aretes[6] == bord_1 -> aretes[i] -> aretes[6] 
-					&& couleur_sommet( bord_2 -> aretes[e] -> aretes[6] ) == couleur )
+					&& graphe_couleur_sommet( bord_2 -> aretes[e] -> aretes[6] ) == couleur )
 					gagnant = true;
 
 				e++;
@@ -439,9 +441,9 @@ bool chaine_gagnante(Graphe graphe, int couleur){
 }
 		
 
-Hexa groupe_en_sommet_unique(Graphe graphe, Hexa groupe){
+Hexa graphe_groupe_en_sommet_unique(Graphe graphe, Hexa graphe_groupe){
 	Hexa sommet_unique;
-	Hexa grp = groupe;
+	Hexa grp = graphe_groupe;
 	int couleur = (grp) -> couleur;
 
 	assert( grp != NULL );
@@ -466,13 +468,13 @@ Hexa groupe_en_sommet_unique(Graphe graphe, Hexa groupe){
 		printf("pour %d %d\n", (grp) -> aretes[i] -> sommet . row, (grp) -> aretes[i] -> sommet . col );
 
 		/* Mise à jour des bords */
-		if(	(grp) -> aretes[i] -> sommet . col  == size_graphe(graphe)-1 ){
+		if(	(grp) -> aretes[i] -> sommet . col  == graphe_size(graphe)-1 ){
 			graphe -> W2 -> aretes[ ((grp) -> aretes[i] -> sommet . row) ] = sommet_unique;
 		}
 		if(	(grp) -> aretes[i] -> sommet . col  == 0 ){
 			graphe -> W1 -> aretes[ ((grp) -> aretes[i] -> sommet . row) ] = sommet_unique;
 		}
-		if( (grp) -> aretes[i] -> sommet . row  == size_graphe(graphe)-1 ){
+		if( (grp) -> aretes[i] -> sommet . row  == graphe_size(graphe)-1 ){
 			graphe -> B2 -> aretes[ ((grp) -> aretes[i] -> sommet . col) ] = sommet_unique;
 		}
 		if( (grp) -> aretes[i] -> sommet . row  == 0 ){
@@ -491,7 +493,7 @@ Hexa groupe_en_sommet_unique(Graphe graphe, Hexa groupe){
 				sommet_unique -> aretes[ sommet_unique -> nb_aretes-1 ] = (grp) -> aretes[i] -> aretes[e];
 				(grp) -> aretes[i] -> aretes[e] -> aretes[(e+3) % 6] = sommet_unique;
 
-				/* Liberation de la memoire sur les aretes des sommets du groupe */
+				/* Liberation de la memoire sur les aretes des sommets du graphe_groupe */
 				(grp) -> aretes[i] -> aretes[e] = NULL;
 				free( (grp) -> aretes[i] -> aretes[e] );
 				
@@ -500,7 +502,7 @@ Hexa groupe_en_sommet_unique(Graphe graphe, Hexa groupe){
 		//printf("\n");
 	}
 
-	/* Liberation de la memoire sur les sommets du groupe */
+	/* Liberation de la memoire sur les sommets du graphe_groupe */
 	for (int i = 0; i < (grp) -> nb_aretes; i++){
 		(grp) -> aretes[i] = NULL;
 		free((grp) -> aretes[i]);
@@ -515,7 +517,7 @@ Hexa groupe_en_sommet_unique(Graphe graphe, Hexa groupe){
 Graphe graphe_reduit( Graphe graphe ){
 	Graphe g = graphe;
 
-	int n = size_graphe( graphe );
+	int n = graphe_size( graphe );
 	
 	for( int row=0; row<n; row++ ){
 
@@ -524,7 +526,7 @@ Graphe graphe_reduit( Graphe graphe ){
 		for( int col=0; col<n; col++ ){
 			if(hexa != NULL && col == hexa -> sommet.col && row == hexa -> sommet.row){
 				if( hexa -> aretes[6] != NULL && hexa -> nb_aretes == 6 )
-					hexa = groupe_en_sommet_unique(g ,(hexa -> aretes[6]) );
+					hexa = graphe_groupe_en_sommet_unique(g ,(hexa -> aretes[6]) );
 				
 				printf("nb_aretes %d\n", hexa -> nb_aretes);
 				/* Passe à l'Hexagone à sa droite (colonne suivante) */
@@ -544,9 +546,9 @@ Graphe graphe_reduit( Graphe graphe ){
 
 
 /* */
-void affiche_sommet_hexa(Graphe graphe){
+void graphe_affiche_row_col_sommet(Graphe graphe){
 
-	int n = size_graphe( graphe );
+	int n = graphe_size( graphe );
 	
 	for( int row=0; row<n; row++ ){
 
@@ -571,9 +573,9 @@ void affiche_sommet_hexa(Graphe graphe){
 }
 
 
-void affiche_sommet_hexa_graph(Graphe graphe){
+void graphe_affichage(Graphe graphe){
 
-	int n = size_graphe( graphe );
+	int n = graphe_size( graphe );
 	
 	for( int row=0; row<n; row++ ){
 		for (int i = 0; i < row; ++i)
@@ -702,22 +704,21 @@ Liste supprime_element( Liste li, Element el ){
 }
 
 /* Fourni la Valeur absolu de x */
-int val_abs(int x){
+int graphe_valeur_absolu(int x){
 
 	if( x < 0 ){
 		return -x;
 	}
 
 	return x;
-
 }
 
-Hexa groupe(Hexa sommet){
+Hexa graphe_groupe(Hexa sommet){
 	return sommet -> aretes[6];
 }
 
 
-int distance_hexagones(Hexa p, Hexa q){
+int graphe_distance_hexagones(Hexa p, Hexa q){
 	int d;
 	int col_1,row_1,col_2,row_2;
 
@@ -728,44 +729,44 @@ int distance_hexagones(Hexa p, Hexa q){
 
 	if( col_1 == col_2 || row_1 == row_2 )
 	{	/* Meme ligne ou meme colonne */
-		d = val_abs(row_1 - row_2) + val_abs(col_1 - col_2);
+		d = graphe_valeur_absolu(row_1 - row_2) + graphe_valeur_absolu(col_1 - col_2);
 	}
-	else if( val_abs(row_1 - row_2) == val_abs(col_1 - col_2) )
+	else if( graphe_valeur_absolu(row_1 - row_2) == graphe_valeur_absolu(col_1 - col_2) )
 	{	/* Si diagonale */
 		if( ( row_1 > row_2 && col_1 < col_2 ) || ( row_1 < row_2 && col_1 > col_2 ) ){
-			d = val_abs(col_1 - col_2);
+			d = graphe_valeur_absolu(col_1 - col_2);
 		}
 		else{
-			d = val_abs(col_1 - col_2) * 2;
+			d = graphe_valeur_absolu(col_1 - col_2) * 2;
 		}
 	}
 	else
 	{	/* Autre */
 		if( ( row_1 > row_2 && col_1 < col_2 ) || ( row_1 < row_2 && col_1 > col_2 ) ){
-			if( val_abs(col_1 - col_2) > val_abs(row_1 - row_2) ){
-				d = val_abs(col_1 - col_2);
+			if( graphe_valeur_absolu(col_1 - col_2) > graphe_valeur_absolu(row_1 - row_2) ){
+				d = graphe_valeur_absolu(col_1 - col_2);
 			}
 			else{
-				d = val_abs(row_1 - row_2);
+				d = graphe_valeur_absolu(row_1 - row_2);
 			}
 		}
 		else{
-			d = val_abs(col_1 - col_2) + val_abs(row_1 - row_2);
+			d = graphe_valeur_absolu(col_1 - col_2) + graphe_valeur_absolu(row_1 - row_2);
 		}
 	}
 
 	return (d + 1);
 }
 
-int distance_hexagone_groupe( Hexa p, Hexa groupe){
+int graphe_distance_hexagone_groupe( Hexa p, Hexa graphe_groupe){
 
-	assert(groupe != NULL);
+	assert(graphe_groupe != NULL);
 
-	int d = distance_hexagones( p, groupe -> aretes[0] );
+	int d = graphe_distance_hexagones( p, graphe_groupe -> aretes[0] );
 
-	for(int i=1; i<groupe -> nb_aretes; i++){
-		if( distance_hexagones( p, groupe -> aretes[i] ) < d ){
-			d = distance_hexagones( p, groupe -> aretes[i] );
+	for(int i=1; i<graphe_groupe -> nb_aretes; i++){
+		if( graphe_distance_hexagones( p, graphe_groupe -> aretes[i] ) < d ){
+			d = graphe_distance_hexagones( p, graphe_groupe -> aretes[i] );
 		}
 	}
 
@@ -773,21 +774,21 @@ int distance_hexagone_groupe( Hexa p, Hexa groupe){
 }
 
 
-Ensemble ensemble_adjacent(Hexa u){
+Ensemble graphe_ensemble_adjacent(Hexa u){
 	Ensemble ensemble_u = Vide();
 
 	assert( u != NULL );
-	Hexa groupe = u -> aretes[6];
+	Hexa graphe_groupe = u -> aretes[6];
 
-	if( groupe == NULL ){
+	if( graphe_groupe == NULL ){
 		for(int i=0; i<6; i++){
 			ensemble_u = Ajout(ensemble_u, u -> aretes[i]);
 		}
 	}
 	else{
-		for(int i=0; i<groupe -> nb_aretes; i++){
+		for(int i=0; i<graphe_groupe -> nb_aretes; i++){
 			for(int e=0; e<6; e++){
-				ensemble_u = Ajout(ensemble_u, groupe -> aretes[i] -> aretes[e]);
+				ensemble_u = Ajout(ensemble_u, graphe_groupe -> aretes[i] -> aretes[e]);
 			}
 		}
 	}
@@ -796,14 +797,14 @@ Ensemble ensemble_adjacent(Hexa u){
 }
 
 
-/* Fourni l'intersection de deux Ensemble */
-Ensemble Intersection(Ensemble ens_1, Ensemble ens_2){
+/* Fourni l'graphe_build_intersection de deux Ensemble */
+Ensemble graphe_intersection(Ensemble ens_1, Ensemble ens_2){
     Ensemble ens_temp;
     int i, e;
     
     for(i=0; i<ens_1.cardinal; i++){
         for(e=0; e<ens_2.cardinal; e++){
-            if( couleur_sommet( ens_1.element[i] ) == TRANSPARANT && ens_1.element[i] == ens_2.element[e] ){
+            if( graphe_couleur_sommet( ens_1.element[i] ) == TRANSPARANT && ens_1.element[i] == ens_2.element[e] ){
                 Ajout(ens_temp, ens_1.element[i] );
             }
         }
@@ -814,18 +815,18 @@ Ensemble Intersection(Ensemble ens_1, Ensemble ens_2){
 
 
 /**
- *	@brief cree un ensemble d'intersection entre un ensemble U et V.
+ *	@brief cree un ensemble d'graphe_build_intersection entre un ensemble U et V.
  *
  *	@param u : un sommet qui contient l'ensemble des element adjacent a celui-ci
  *	@param v : un sommet qui contient l'ensemble des element adjacent a celui-ci
  *
- *  @return Intersection : Structure qui contient un tableau contenant l'ensemble et le cardinal de cette ensemble.
+ *  @return graphe_intersection : Structure qui contient un tableau contenant l'ensemble et le cardinal de cette ensemble.
  *
  */
-Ensemble intersection(Hexa u, Hexa v){
-	Ensemble ens_u = ensemble_adjacent(u);
-	Ensemble ens_v = ensemble_adjacent(v);
-	Ensemble intersec = Intersection(ens_u, ens_v);
+Ensemble graphe_build_intersection(Hexa u, Hexa v){
+	Ensemble ens_u = graphe_ensemble_adjacent(u);
+	Ensemble ens_v = graphe_ensemble_adjacent(v);
+	Ensemble intersec = graphe_intersection(ens_u, ens_v);
 
 	printf("intersec . cardinal = %d\n", intersec . cardinal);
 
@@ -833,13 +834,13 @@ Ensemble intersection(Hexa u, Hexa v){
 }
 
 
-bool connexion_forcer(Hexa u, Hexa v){
+bool graphe_connexion_forcer(Hexa u, Hexa v){
 	Ensemble i;
 
-	if( couleur_sommet( u ) != TRANSPARANT && couleur_sommet( u ) ==  couleur_sommet( v ) 
+	if( graphe_couleur_sommet( u ) != TRANSPARANT && graphe_couleur_sommet( u ) ==  graphe_couleur_sommet( v ) 
 		&& ( u -> aretes[6] == NULL || u -> aretes[6] != v -> aretes[6] ) ){
 
-		i = intersection( u, v );
+		i = graphe_build_intersection( u, v );
 		if( i . cardinal >= 2 ){
 			return true;
 		}
@@ -855,7 +856,7 @@ void couleur(int i, char *color){
 			strcpy(color, "black");
 			break ;
 		case 1:
-			strcpy(color, "cyan4");
+			strcpy(color, "white");
 			break ;
 		case 2:
 			strcpy(color, "chartreuse3");
@@ -878,13 +879,13 @@ void couleur(int i, char *color){
 void graphe_printNode(Hexa n, FILE *file){
 	
 	if(n -> couleur == BLANC)
-		fprintf(file, "\tn%d [style=filled, fillcolor=ghostwhite, label=\"%d , %d\"];\n",
+		fprintf(file, "\tn%d [style=filled, fillcolor=gold1, label=\"%d , %d\"];\n",
 			n, n -> sommet.row, n -> sommet.col);
 	else if(n -> couleur == NOIR)
 		fprintf(file, "\tn%d [style=filled, fillcolor=navyblue, fontcolor=gold1, label=\"%d , %d\"];\n",
 			n, n -> sommet.row, n -> sommet.col);
 	else
-		fprintf(file, "\tn%d [style=filled, fillcolor=lightblue1, fontcolor=red, label=\"%d , %d\"];\n",
+		fprintf(file, "\tn%d [style=filled, fillcolor=white, label=\"%d , %d\"];\n",
 			n, n -> sommet.row, n -> sommet.col);
 	
 	char color[20];
@@ -906,8 +907,8 @@ void graphe_printNode(Hexa n, FILE *file){
 
 void graphe_export_dot(Graphe g, FILE *file) {
 
-	fprintf(file, "digraph Graphe {\n\tgraph [\n\tbgcolor= lightblue1\n\tranksep=0.5];\n\tnode [shape = doublecircle, fon_size = 6];\n\n");
-	int n = size_graphe(g);
+	fprintf(file, "digraph Graphe {\n\tgraph [\n\tbgcolor= blue\n\tranksep=0.5];\n\tnode [shape = doublecircle, fon_size = 6];\n\n");
+	int n = graphe_size(g);
 
 	for(int i=0; i<n*n; i++){
 		graphe_printNode(g -> tab[i], file);
@@ -934,9 +935,9 @@ void graphe_dot(Graphe g, char * name){
     fclose(file);
 } 
 
-void chaine_hexa_graph(Graphe graphe, char* chaine){
+void graphe_chaine_daffichage(Graphe graphe, char* chaine){
 	strcpy(chaine, "");
-	int n = size_graphe( graphe );
+	int n = graphe_size( graphe );
 	
 	for( int row=0; row<n; row++ ){
 		for (int i = 0; i < row; ++i)

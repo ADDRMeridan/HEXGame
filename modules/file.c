@@ -1,21 +1,29 @@
+/*----------------------------------------------
+ *Structure de Donnée File
+ *
+ *Auteur : MOHAMED Mourdas
+ *Date de modification : 12/05/2017
+ *---------------------------------------------*/
+
+
 #include <stdbool.h>
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
 #include <assert.h>
 
-
-#include "minimax.h"
 #include "file.h"
 
-#define MAX 500
+#define MAX 50000
+
+typedef struct node Node;
 
 struct s_file{
 	Node* file[MAX];
 	int size;
 };
 
-File initeFile(){
+File file_initialisation(){
 	File file = (File) malloc( sizeof( struct s_file ) );
 	assert(file != NULL);
 	
@@ -23,17 +31,17 @@ File initeFile(){
 	return file;
 }
 
-bool filePleine_2(File fil){
+bool file_pleine(File fil){
 	return fil -> size == MAX;
 }
 
-bool fileVide_2(File fil){
+bool file_vide(File fil){
 	return fil -> size == 0;
 }
 
-File enfiler_2(File fil, Node* val){
+File file_enfiler(File fil, Node* val){
 
-	assert( !filePleine_2(fil) );
+	assert( !file_pleine(fil) );
 
 	fil -> file[ fil -> size ] = val;
 	fil -> size++;
@@ -41,9 +49,9 @@ File enfiler_2(File fil, Node* val){
 	return fil;
 }
 
-Node* defiler_2(File fil){
+Node* file_defiler(File fil){
 
-	assert( !fileVide_2(fil) );
+	assert( !file_vide(fil) );
 
 	Node* val = fil -> file[0];
 	

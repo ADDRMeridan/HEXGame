@@ -8,7 +8,7 @@
 #ifndef ENSEMBLE_H
 #define ENSEMBLE_H
 
-#include "element.h"
+#include "element_sommet.h"
 
 /* ----------------------------------
         Déclaration des types

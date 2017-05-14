@@ -11,8 +11,8 @@
 #include <stdbool.h>
 
 #include "graphe.h"
-#include "element_g.h"
-#include "element.h"
+#include "element_graphe.h"
+#include "element_sommet.h"
 #include "file.h"
 #include "minimax.h"
 
@@ -20,98 +20,99 @@
 struct node{
 	struct node * parent;
 	struct node ** fils;
-	Graphe config;
+	Graphe minimax_config;
 	int couleur;
-	int valeur;
+	int minimax_valeur;
 	int nb_fils;
 
-	/* Pour amelioré la complexité lors de la Recherche de la meilleur config */
-	int etage;	
+	/* Pour amelioré la complexité lors de la Recherche de la meilleur minimax_config */
+	int etage;
 };
 
 typedef struct node Node;
 
 struct minimax{
-	Node* root;
+	Node* minimax_root;
 };
 
 typedef struct minimax * Minimax;
 
 /*  */
-void ligne_cole(int n, int num_case, int *ligne, int *col){
-    assert( num_case < (n * n) && num_case >= 0 );
+void minimax_ligne_colonne(int n, int graphe_num_case, int *ligne, int *col){
+    assert( graphe_num_case < (n * n) && graphe_num_case >= 0 );
     
-    *ligne = num_case / n;
-    *col = num_case % n;
+    *ligne = graphe_num_case / n;
+    *col = graphe_num_case % n;
 }
 
 /*  */
-int num_casee(int n, int ligne, int col){
+int minimax_num_case(int n, int ligne, int col){
     assert( ligne < n && ligne >= 0 && col < n && col >= 0 );
     
     return n * ligne + col;
 }
 
-Minimax inite_minimax(int n){
+Minimax minimax_initialisation(int n){
 	Minimax m = (Minimax) malloc( sizeof( struct minimax ) );
 	assert(m != NULL);
 
-	m -> root = (Node*) malloc( sizeof( Node ) );
-	assert(m -> root != NULL);	
+	m -> minimax_root = (Node*) malloc( sizeof( Node ) );
+	assert(m -> minimax_root != NULL);	
 
 	/* Configuration c0 aucun pion n'a était poser */
-	m -> root -> config = inite_graphe(n);
-	m -> root -> valeur = 1;
-	m -> root -> nb_fils = 0;
-	m -> root -> couleur = TRANSPARANT;
-	m -> root -> etage = 0;
-	m -> root -> parent = NULL;
-	m -> root -> fils = NULL;
+	m -> minimax_root -> minimax_config = graphe_initialisation(n);
+	m -> minimax_root -> minimax_valeur = 1;
+	m -> minimax_root -> nb_fils = 0;
+	m -> minimax_root -> couleur = TRANSPARANT;
+	m -> minimax_root -> etage = 0;
+	m -> minimax_root -> parent = NULL;
+	m -> minimax_root -> fils = NULL;
 
 	return m;
 }
 
-Node* root(Minimax m){
-	return m -> root;
+Node* minimax_root(Minimax m){
+	return m -> minimax_root;
 }
 
-Graphe config(Node* n){
-	return n -> config;
+Graphe minimax_config(Node* n){
+	return n -> minimax_config;
 }
 
-int valeur(Node n){
-	return n . valeur;
+int minimax_valeur(Node n){
+	return n . minimax_valeur;
 }
 
-int nombre_fils(Node n){
+int minimax_nombre_fils(Node n){
 	return n . nb_fils;
 }
 
-Graphe copie_config(Graphe g, Graphe h){
+Graphe minimax_copie_config(Graphe g){
+	Graphe h;
 	Hexa sommet_g;
 	int col,row;
 	int couleur;
-	int n = size_graphe(g);
-	h = inite_graphe(n);
+	int n = graphe_size(g);
+	h = graphe_initialisation(n);
 	
 	for(int i=0; i<n*n; i++){
-		ligne_cole( n, i, &row, &col);
-		sommet_g = hexagone(g, row, col);
+		minimax_ligne_colonne( n, i, &row, &col);
+		sommet_g = graphe_hexagone(g, row, col);
 
-		couleur = couleur_sommet(sommet_g);
+		couleur = graphe_couleur_sommet(sommet_g);
 		if(couleur != TRANSPARANT)
-			ajout_hexagone(h, row, col, couleur);
+			graphe_ajout_hexagone(h, row, col, couleur);
 	}
 
 	return h;
 }
 
 /**
- *	@brief une fonction successeur qui associe à chaque 
+ *	@brief une fonction minimax_successeur qui associe à chaque 
  		conﬁguration de jeu, l’ensemble des conﬁgurations accessibles 
  		en un coup.
  *
- *	@param config : une configaration (graphe).
+ *	@param minimax_config : une configaration (graphe).
  *	@param couleur : la couleur que l'on shouaite associer au nouvel element, 
  		la configuration.
  *
@@ -119,7 +120,7 @@ Graphe copie_config(Graphe g, Graphe h){
  		en un coup.
  *
  */
-Ensemble successeur(Graphe config, int couleur){
+Ensemble minimax_successeur(Graphe minimax_config, int couleur){
 	int n;
 	int row,col;
 	Ensemble ens_g = Vide();
@@ -127,18 +128,18 @@ Ensemble successeur(Graphe config, int couleur){
 
 	Hexa sommet;
 
-	if( chaine_gagnante( config, NOIR ) || chaine_gagnante( config, BLANC ) )
+	if( graphe_chaine_gagnante( minimax_config, NOIR ) || graphe_chaine_gagnante( minimax_config, BLANC ) )
 		return ens_g;
 
-	n = size_graphe(config);
+	n = graphe_size(minimax_config);
 
 	for(int i=0; i<n*n; i++){
-		ligne_cole( n, i, &row, &col);
-		aux_g = copie_config(config, aux_g);
-		sommet = hexagone(aux_g, row, col);
+		minimax_ligne_colonne( n, i, &row, &col);
+		aux_g = minimax_copie_config(minimax_config);
+		sommet = graphe_hexagone(aux_g, row, col);
 
-		if(couleur_sommet(sommet) == TRANSPARANT){
-			ajout_hexagone(aux_g, row, col, couleur);
+		if(graphe_couleur_sommet(sommet) == TRANSPARANT){
+			graphe_ajout_hexagone(aux_g, row, col, couleur);
 			ens_g = Ajout(ens_g, aux_g);
 		}
 	};
@@ -153,10 +154,10 @@ void minimax( Node * n ){
 	if( n -> fils == NULL )
 	{	/* Si n est une feuille */
 
-		if( chaine_gagnante( n -> config, NOIR ) )
-			n -> valeur = 1;
-		else if( chaine_gagnante( n -> config, BLANC ) )
-			n -> valeur = -1;
+		if( graphe_chaine_gagnante( n -> minimax_config, NOIR ) )
+			n -> minimax_valeur = 1;
+		else if( graphe_chaine_gagnante( n -> minimax_config, BLANC ) )
+			n -> minimax_valeur = -1;
 	}
 
 	else if( n -> fils )
@@ -164,23 +165,23 @@ void minimax( Node * n ){
 
 		/* Recherche du minimum et du maximum */
 		for(int i=0; i<n -> nb_fils; i++){
-			if( n -> fils[i] -> valeur < min)
-				min = n -> fils[i] -> valeur;
-			if( n -> fils[i] -> valeur > max)
-				max = n -> fils[i] -> valeur;
+			if( n -> fils[i] -> minimax_valeur < min)
+				min = n -> fils[i] -> minimax_valeur;
+			if( n -> fils[i] -> minimax_valeur > max)
+				max = n -> fils[i] -> minimax_valeur;
 		}
 
-		/* Affectation de la valeur */
+		/* Affectation de la minimax_valeur */
 		if( n -> couleur == NOIR ){
-			n -> valeur = min;
+			n -> minimax_valeur = min;
 		}
 		else{
-			n -> valeur = max;
+			n -> minimax_valeur = max;
 		}
 	}
 }
 
-Node* ajout_successeur(Node* n, Ensemble ensemble, int couleur){
+Node* minimax_ajout_successeur(Node* n, Ensemble ensemble, int couleur){
 	
 	Node* aux = n;
 	Element el;
@@ -205,10 +206,10 @@ Node* ajout_successeur(Node* n, Ensemble ensemble, int couleur){
 		assert(add != NULL);
 
 		add -> nb_fils = 0;
-		add -> valeur = 1;
+		add -> minimax_valeur = 1;
 
 		el = element( ensemble, i );
-		add -> config = el;
+		add -> minimax_config = el;
 
 		add -> couleur = couleur;
 
@@ -220,77 +221,77 @@ Node* ajout_successeur(Node* n, Ensemble ensemble, int couleur){
 		aux -> fils[i] = add;
 		
 		if(couleur == NOIR){
-			ajout_successeur(add, successeur( add -> config, BLANC), BLANC);
+			minimax_ajout_successeur(add, minimax_successeur( add -> minimax_config, BLANC), BLANC);
 		}
 		else{
-			ajout_successeur(add, successeur( add -> config, NOIR), NOIR);
+			minimax_ajout_successeur(add, minimax_successeur( add -> minimax_config, NOIR), NOIR);
 		}
 
 		minimax( add );
 		//printf("-\n");
-		//affiche_sommet_hexa_graph(add -> config);
+		//graphe_affichage(add -> minimax_config);
 	}
 
 	return aux;
 }
 
-Minimax build(Minimax m, int n){
-	m = inite_minimax(n);
-	Node * aux = m -> root;
+Minimax minimax_build(Minimax m, int n){
+	m = minimax_initialisation(n);
+	Node * aux = m -> minimax_root;
 	Ensemble ensemble;
 
-	ensemble = successeur( aux -> config, NOIR);
-	ajout_successeur(aux, ensemble, NOIR);
+	ensemble = minimax_successeur( aux -> minimax_config, NOIR);
+	minimax_ajout_successeur(aux, ensemble, NOIR);
 
 	return m;
 }
 
 
-void triIteratifMinmaxLargeur(Minimax abr){
+void minimax_tri_iteratif_largeur(Minimax abr){
 	File file;
-	Node* nodeCour = abr -> root;
+	Node* nodeCour = abr -> minimax_root;
 
-	file = initeFile();
+	file = file_initialisation();
 
 	/* Enfile la racine */
-	enfiler_2(file, nodeCour);
+	file_enfiler(file, nodeCour);
 
-	while( !fileVide_2( file ) ){
-		nodeCour = defiler_2(file);
+	while( !file_vide( file ) ){
+		nodeCour = file_defiler(file);
 
 		/* Effectue une action sur le noeud concerner */
-		affiche_sommet_hexa_graph(nodeCour -> config);
+		graphe_affichage(nodeCour -> minimax_config);
 
 		/* Enfile les fils si ils en existe */
 		for(int i=0; i<nodeCour -> nb_fils; i++){
 			if(nodeCour -> fils[i] != NULL){
-				enfiler_2(file, nodeCour -> fils[i]);
+				file_enfiler(file, nodeCour -> fils[i]);
 			}
 		}
 	}
 }
 
 
-Node* search_graphe(Minimax abr, Graphe g, int nivau){
+Node* minimax_search_graphe(Minimax abr, Graphe g, int nivau){
 	File file;
-	Node* nodeCour = abr -> root;
-	file = initeFile();
+	Node* nodeCour = abr -> minimax_root;
+	file = file_initialisation();
 
 	/* Enfile la racine */
-	enfiler_2(file, nodeCour);
+	file_enfiler(file, nodeCour);
 
-	while( !fileVide_2( file ) ){
-		nodeCour = defiler_2(file);
+	while( !file_vide( file ) ){
+		nodeCour = file_defiler(file);
 
 		/* Effectue une action sur le noeud concerner */
-		if( nodeCour -> etage == nivau && graphe_identique( g, nodeCour -> config ) ){
+		if( nodeCour -> etage == nivau && minimax_graphe_identique( g, nodeCour -> minimax_config ) ){
 			return nodeCour;
 		}
 
 		/* Enfile les fils si ils en existe */
 		for(int i=0; i<nodeCour -> nb_fils; i++){
 			if(nodeCour -> fils[i] != NULL){
-				enfiler_2(file, nodeCour -> fils[i]);
+				file_enfiler(file, nodeCour -> fils[i]);
 			}
 		}
 	}
@@ -298,47 +299,47 @@ Node* search_graphe(Minimax abr, Graphe g, int nivau){
 	return NULL;
 }
 
-bool graphe_identique(Graphe g, Graphe h){
+bool minimax_graphe_identique(Graphe g, Graphe h){
 	bool identique = true;
 	Hexa sommet_g;
 	Hexa sommet_h;
 	int col,row;
-	int n = size_graphe(g);
-	assert(n == size_graphe(h));
-	if( n != size_graphe(h) )
+	int n = graphe_size(g);
+	assert(n == graphe_size(h));
+	if( n != graphe_size(h) )
 		return false;
 	
 	for(int i=0; (i<n*n && identique); i++){
-		ligne_cole( n, i, &row, &col);
-		sommet_g = hexagone(g, row, col);
-		sommet_h = hexagone(h, row, col);
+		minimax_ligne_colonne( n, i, &row, &col);
+		sommet_g = graphe_hexagone(g, row, col);
+		sommet_h = graphe_hexagone(h, row, col);
 
-		if( couleur_sommet(sommet_g) != couleur_sommet(sommet_h) )
+		if( graphe_couleur_sommet(sommet_g) != graphe_couleur_sommet(sommet_h) )
 			identique = false;
 	}
 
 	return identique;
 }
 
-Graphe search_config_gagnant(Node* n, int valeur_gagnante){
+Graphe minimax_search_config_gagnant(Node* n, int valeur_gagnante){
 	File file;
 	Node* nodeCour = n;
-	file = initeFile();
+	file = file_initialisation();
 
 	/* Enfile la racine */
-	enfiler_2(file, nodeCour);
+	file_enfiler(file, nodeCour);
 
-	while( !fileVide_2( file ) ){
-		nodeCour = defiler_2(file);
+	while( !file_vide( file ) ){
+		nodeCour = file_defiler(file);
 
 		/* Effectue une action sur le noeud concerner */
-		if( nodeCour != n && nodeCour -> valeur == valeur_gagnante )
-			return nodeCour -> config;
+		if( nodeCour != n && nodeCour -> minimax_valeur == valeur_gagnante )
+			return nodeCour -> minimax_config;
 
 		/* Enfile les fils si ils en existe */
 		for(int i=0; i<nodeCour -> nb_fils; i++){
 			if(nodeCour -> fils[i] != NULL){
-				enfiler_2(file, nodeCour -> fils[i]);
+				file_enfiler(file, nodeCour -> fils[i]);
 			}
 		}
 	}
@@ -384,18 +385,18 @@ void queue_delete(QueueOfBinaryTrees f) {
 /*	Export the tree as a dot file				*/
 /* -------------------------------------------- */
 
-void printNode(Node* n, FILE *file){
+void minimax_printNode(Node* n, FILE *file){
 	char chaine[100];
-	chaine_hexa_graph( n -> config, chaine);
+	graphe_chaine_daffichage( n -> minimax_config, chaine);
 	if(n -> couleur == BLANC)
 		fprintf(file, "\tn%d [fillcolor = ghostwhite, label=\"%sValeur de jeu = %d\"];\n",
-			n, chaine, n -> valeur);
+			n, chaine, n -> minimax_valeur);
 	else if(n -> couleur == NOIR)
 		fprintf(file, "\tn%d [fillcolor = deepskyblue1, label=\"%sValeur de jeu = %d\"];\n",
-			n, chaine, n -> valeur);
+			n, chaine, n -> minimax_valeur);
 	else
 		fprintf(file, "\tn%d [fillcolor = gold1, label=\"%sValeur de jeu = %d\"];\n",
-			n, chaine, n -> valeur);
+			n, chaine, n -> minimax_valeur);
 
 	for(int i=0; i<n -> nb_fils; i++){
 		if(n -> fils[i] != NULL){
@@ -412,7 +413,7 @@ void minimax_export_dot(Node* t, FILE *file) {
 	queue_push(q, t);
 	while (!queue_empty(q)) {
 		t = queue_pop(q);
-		printNode(t, file);
+		minimax_printNode(t, file);
 		for(int i=0; i<t -> nb_fils; i++){
 			if(t -> fils[i] != NULL){
 				queue_push(q, t -> fils[i]);

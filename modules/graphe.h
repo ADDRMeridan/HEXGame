@@ -20,6 +20,7 @@
 typedef struct s_Graphe * Graphe;
 typedef struct s_hexa * Hexa;
 
+
 /* ----------------------------------
             Constructeurs
    --------------------------------*/

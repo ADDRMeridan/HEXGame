@@ -12,8 +12,8 @@
 #include "ensemble.h"
 
 /* Ensemble */
-
 typedef struct ensemble Ensemble;
+
 
 Ensemble Vide(){
     Ensemble ens;

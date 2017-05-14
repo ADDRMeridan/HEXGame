@@ -2,6 +2,7 @@
 #define FILE_H
 
 #include <stdbool.h>
+
 #include "minimax.h"
 
 typedef struct s_file * File;

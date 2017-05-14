@@ -2,7 +2,7 @@
  *Auteur : MOHAMED Mourdas
  *Dêpendance : ensemble, element_g, file2,
  	graphe
- *Date de modification : 13/05/2017
+ *Date de modification : 14/05/2017
  *---------------------------------------------*/
 
 #include <stdlib.h>
@@ -12,9 +12,10 @@
 
 #include "graphe.h"
 #include "element_g.h"
-#include "ensemble.h"
-#include "minimax.h"
+#include "element.h"
 #include "file.h"
+#include "minimax.h"
+
 
 struct node{
 	struct node * parent;
@@ -23,6 +24,9 @@ struct node{
 	int couleur;
 	int valeur;
 	int nb_fils;
+
+	/* Pour amelioré la complexité lors de la Recherche de la meilleur config */
+	int etage;	
 };
 
 typedef struct node Node;
@@ -60,6 +64,7 @@ Minimax inite_minimax(int n){
 	m -> root -> valeur = 1;
 	m -> root -> nb_fils = 0;
 	m -> root -> couleur = TRANSPARANT;
+	m -> root -> etage = 0;
 	m -> root -> parent = NULL;
 	m -> root -> fils = NULL;
 
@@ -84,7 +89,6 @@ int nombre_fils(Node n){
 
 Graphe copie_config(Graphe g, Graphe h){
 	Hexa sommet_g;
-	Hexa sommet_h;
 	int col,row;
 	int couleur;
 	int n = size_graphe(g);
@@ -93,10 +97,10 @@ Graphe copie_config(Graphe g, Graphe h){
 	for(int i=0; i<n*n; i++){
 		ligne_cole( n, i, &row, &col);
 		sommet_g = hexagone(g, row, col);
-		sommet_h = hexagone(h, row, col);
 
 		couleur = couleur_sommet(sommet_g);
-		colorie_sommet(sommet_h, couleur);
+		if(couleur != TRANSPARANT)
+			ajout_hexagone(h, row, col, couleur);
 	}
 
 	return h;
@@ -192,7 +196,8 @@ Node* ajout_successeur(Node* n, Ensemble ensemble, int couleur){
 	assert(aux -> fils != NULL);
 
 	aux -> nb_fils = c;
-	printf("c == %d\n", cardinal(ensemble));
+
+	//printf("c == %d n = %d\n", cardinal(ensemble), aux);
 
 	for(int i=0; i<aux -> nb_fils; i++){
 
@@ -209,6 +214,8 @@ Node* ajout_successeur(Node* n, Ensemble ensemble, int couleur){
 
 		add -> fils = NULL;
 		add -> parent = aux; 
+
+		add -> etage = add -> parent -> etage + 1;
 
 		aux -> fils[i] = add;
 		
@@ -260,12 +267,86 @@ void triIteratifMinmaxLargeur(Minimax abr){
 				enfiler_2(file, nodeCour -> fils[i]);
 			}
 		}
-		printf("\n");
 	}
 }
 
 
-#define MAXFILE 4096
+Node* search_graphe(Minimax abr, Graphe g, int nivau){
+	File file;
+	Node* nodeCour = abr -> root;
+	file = initeFile();
+
+	/* Enfile la racine */
+	enfiler_2(file, nodeCour);
+
+	while( !fileVide_2( file ) ){
+		nodeCour = defiler_2(file);
+
+		/* Effectue une action sur le noeud concerner */
+		if( nodeCour -> etage == nivau && graphe_identique( g, nodeCour -> config ) ){
+			return nodeCour;
+		}
+
+		/* Enfile les fils si ils en existe */
+		for(int i=0; i<nodeCour -> nb_fils; i++){
+			if(nodeCour -> fils[i] != NULL){
+				enfiler_2(file, nodeCour -> fils[i]);
+			}
+		}
+	}
+
+	return NULL;
+}
+
+bool graphe_identique(Graphe g, Graphe h){
+	bool identique = true;
+	Hexa sommet_g;
+	Hexa sommet_h;
+	int col,row;
+	int n = size_graphe(g);
+	assert(n == size_graphe(h));
+	if( n != size_graphe(h) )
+		return false;
+	
+	for(int i=0; (i<n*n && identique); i++){
+		ligne_cole( n, i, &row, &col);
+		sommet_g = hexagone(g, row, col);
+		sommet_h = hexagone(h, row, col);
+
+		if( couleur_sommet(sommet_g) != couleur_sommet(sommet_h) )
+			identique = false;
+	}
+
+	return identique;
+}
+
+Graphe search_config_gagnant(Node* n, int valeur_gagnante){
+	File file;
+	Node* nodeCour = n;
+	file = initeFile();
+
+	/* Enfile la racine */
+	enfiler_2(file, nodeCour);
+
+	while( !fileVide_2( file ) ){
+		nodeCour = defiler_2(file);
+
+		/* Effectue une action sur le noeud concerner */
+		if( nodeCour != n && nodeCour -> valeur == valeur_gagnante )
+			return nodeCour -> config;
+
+		/* Enfile les fils si ils en existe */
+		for(int i=0; i<nodeCour -> nb_fils; i++){
+			if(nodeCour -> fils[i] != NULL){
+				enfiler_2(file, nodeCour -> fils[i]);
+			}
+		}
+	}
+
+	return NULL;
+}
+
+#define MAXFILE 9000000
 typedef struct s_queue {
 	Node* queue[MAXFILE];
 	int head;
@@ -307,18 +388,18 @@ void printNode(Node* n, FILE *file){
 	char chaine[100];
 	chaine_hexa_graph( n -> config, chaine);
 	if(n -> couleur == BLANC)
-		fprintf(file, "\tn%d [fillcolor = ghostwhite, label=\"%sminmax = %d\"];\n",
+		fprintf(file, "\tn%d [fillcolor = ghostwhite, label=\"%sValeur de jeu = %d\"];\n",
 			n, chaine, n -> valeur);
 	else if(n -> couleur == NOIR)
-		fprintf(file, "\tn%d [fillcolor = deepskyblue1, label=\"%sminmax = %d\"];\n",
+		fprintf(file, "\tn%d [fillcolor = deepskyblue1, label=\"%sValeur de jeu = %d\"];\n",
 			n, chaine, n -> valeur);
 	else
-		fprintf(file, "\tn%d [fillcolor = gold1, label=\"%sminmax = %d\"];\n",
+		fprintf(file, "\tn%d [fillcolor = gold1, label=\"%sValeur de jeu = %d\"];\n",
 			n, chaine, n -> valeur);
 
 	for(int i=0; i<n -> nb_fils; i++){
 		if(n -> fils[i] != NULL){
-			fprintf(file, "\tn%d -> n%d [penwidth = 2]\n",
+			fprintf(file, "\tn%d -> n%d [penwidth = 3, color=white]\n",
 				n, n -> fils[i]);
 		}
 	}
@@ -326,7 +407,7 @@ void printNode(Node* n, FILE *file){
 
 void minimax_export_dot(Node* t, FILE *file) {
 	QueueOfBinaryTrees q = queue_create();
-	fprintf(file, "digraph Minimax {\n\tgraph [\n\t\trankdir = LR\n\t\tbgcolor= aliceblue\n\t];\n\tnode [\n\t\tshape = doublecircle\n\t\tfontsize = \"10\"\n\t\tfontname=\"Harry P\"\n\t\tstyle = \"rounded,filled\"\n\t];\n\n");
+	fprintf(file, "digraph Minimax {\n\tgraph [\n\t\trankdir = TD\n\t\tbgcolor = blue\n\t];\n\tnode [\n\t\tshape = doublecircle\n\t\tfontsize = \"12\"\n\t\tfontname=\"Harry P\"\n\t\tstyle = \"filled\"\n\t];\n\n");
 
 	queue_push(q, t);
 	while (!queue_empty(q)) {

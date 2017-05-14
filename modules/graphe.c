@@ -1,7 +1,7 @@
 /*----------------------------------------------
  *Auteur : MOHAMED Mourdas
  *Dêpendance : ensemble
- *Date de modification : 12/05/2017
+ *Date de modification : 13/05/2017
  *---------------------------------------------*/
 
 #include <stdlib.h>
@@ -38,6 +38,8 @@ struct s_Graphe{
 	Hexa B1;
 	Hexa B2;
 	int size;
+
+	/* Pour amelioré la complexité de recherche d'un hexagone */
 	Hexa* tab;
 };
 
@@ -879,10 +881,10 @@ void graphe_printNode(Hexa n, FILE *file){
 		fprintf(file, "\tn%d [style=filled, fillcolor=ghostwhite, label=\"%d , %d\"];\n",
 			n, n -> sommet.row, n -> sommet.col);
 	else if(n -> couleur == NOIR)
-		fprintf(file, "\tn%d [style=filled, fillcolor= black, fontcolor=gold1, label=\"%d , %d\"];\n",
+		fprintf(file, "\tn%d [style=filled, fillcolor=navyblue, fontcolor=gold1, label=\"%d , %d\"];\n",
 			n, n -> sommet.row, n -> sommet.col);
 	else
-		fprintf(file, "\tn%d [style=filled, fillcolor= lightskyblue1, fontcolor=red, label=\"%d , %d\"];\n",
+		fprintf(file, "\tn%d [style=filled, fillcolor=lightblue1, fontcolor=red, label=\"%d , %d\"];\n",
 			n, n -> sommet.row, n -> sommet.col);
 	
 	char color[20];
@@ -904,7 +906,7 @@ void graphe_printNode(Hexa n, FILE *file){
 
 void graphe_export_dot(Graphe g, FILE *file) {
 
-	fprintf(file, "digraph Graphe {\n\tgraph [\n\tbgcolor= aliceblue\n\tranksep=0.5];\n\tnode [shape = doublecircle, fon_size = 6];\n\n");
+	fprintf(file, "digraph Graphe {\n\tgraph [\n\tbgcolor= lightblue1\n\tranksep=0.5];\n\tnode [shape = doublecircle, fon_size = 6];\n\n");
 	int n = size_graphe(g);
 
 	for(int i=0; i<n*n; i++){
@@ -918,14 +920,16 @@ void graphe_dot(Graphe g, char * name){
 	FILE * file = NULL;
     file = fopen(name, "w");
 
-    printf("--%s\n", name);
+    printf("Creation du fichier %s en cours...\n", name);
 
     if( file == NULL ){
-        printf("Erreur Lecture fichier \n");
+        printf("Erreur D'ouverture du fichier \n");
         exit(1);
     }
 
     graphe_export_dot(g , file);
+
+    printf("Creation du fichier %s realiser avec succes !!\n", name);
 
     fclose(file);
 } 

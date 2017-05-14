@@ -1,7 +1,7 @@
 #ifndef ELEMENT_H
 #define ELEMENT_H
 
-#include "graphe.h"
+typedef struct s_hexa * Hexa;
 
 typedef Hexa Element;
 

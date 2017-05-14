@@ -17,8 +17,8 @@
 typedef struct ensemble Ensemble;
 
 struct ensemble{
-	Element * element;
-	int cardinal;
+    Element * element;
+    int cardinal;
 };
 
 /* ----------------------------------

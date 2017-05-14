@@ -2,7 +2,7 @@
  *Structure de Donnée Minimax
  *
  *Auteur : MOHAMED Mourdas
- *Date de modification : 13/05/2017
+ *Date de modification : 14/05/2017
  *---------------------------------------------*/
 
 #ifndef MINIMAX_H
@@ -12,13 +12,13 @@
 #include "element_g.h"
 #include "ensemble.h"
 
-
 /* ----------------------------------
         Déclaration des types
    --------------------------------*/
 
 typedef struct minimax * Minimax;
 typedef struct node Node;
+
 
 /* ----------------------------------
             Constructeurs
@@ -125,6 +125,14 @@ void triIteratifMinmaxLargeur(Minimax abr);
 
 
 void minimax_export_dot(Node* t, FILE *file);
+
+void ligne_cole(int n, int num_case, int *ligne, int *col);
+
+bool graphe_identique(Graphe g, Graphe h);
+
+Node* search_graphe(Minimax abr, Graphe g, int nivau);
+
+Graphe search_config_gagnant(Node* n, int valeur_gagnante);
 
 #endif
 

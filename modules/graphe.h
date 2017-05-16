@@ -66,6 +66,8 @@ Hexa graphe_colorie_sommet(Hexa sommet, int couleur);
 Graphe graphe_ajout_hexagone(Graphe graphe, int row, int colonne, int couleur);
 
 
+void graphe_suppression(Graphe *graphe);
+
 Graphe graphe_reduit( Graphe graphe );
 
 /**
@@ -80,9 +82,13 @@ Graphe graphe_reduit( Graphe graphe );
  */
 void graphe_ajout_dans_groupe(Hexa hex_1, Hexa hex_2);
 
+Graphe graphe_supprime_hexagone( Graphe graphe, int row, int col );
+
 /* ----------------------------------
             Accesseurs
    --------------------------------*/
+
+bool graphe_vide(Graphe graphe);
 
 /**
  *	@brief indique la taille d'un Graphe.

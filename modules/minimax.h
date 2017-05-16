@@ -124,7 +124,10 @@ Node* minimax_root(Minimax m);
 void minimax_tri_iteratif_largeur(Minimax abr);
 
 /**
- *	@brief ecris un fichier dot de la structure d'un Noeud, corespondant a un arbre minimax
+ *	@brief ecris un fichier dot de la structure d'un Noeud, corespondant 
+ 		a un arbre minimax il est preferable d'avoir la 
+ 		police de caratere "dPoly Imperial" installer sur sa machine pour utiliser, cette fonction
+ 		(Permet de mieux differencier les configuration)
  *
  *	@param t : le Noeud concerner
  *	@param file : le fichier dans lequel ecrire

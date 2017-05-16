@@ -386,16 +386,16 @@ void queue_delete(QueueOfBinaryTrees f) {
 /* -------------------------------------------- */
 
 void minimax_printNode(Node* n, FILE *file){
-	char chaine[100];
+	char chaine[1000];
 	graphe_chaine_daffichage( n -> minimax_config, chaine);
 	if(n -> couleur == BLANC)
-		fprintf(file, "\tn%d [fillcolor = ghostwhite, label=\"%sValeur de jeu = %d\"];\n",
+		fprintf(file, "\tn%d [fillcolor = ghostwhite, label=<%s %d>];\n",
 			n, chaine, n -> minimax_valeur);
 	else if(n -> couleur == NOIR)
-		fprintf(file, "\tn%d [fillcolor = deepskyblue1, label=\"%sValeur de jeu = %d\"];\n",
+		fprintf(file, "\tn%d [fillcolor = deepskyblue1, fontcolor = black, label=<%s %d>];\n",
 			n, chaine, n -> minimax_valeur);
 	else
-		fprintf(file, "\tn%d [fillcolor = gold1, label=\"%sValeur de jeu = %d\"];\n",
+		fprintf(file, "\tn%d [fillcolor = gold1, label=<%s %d>];\n",
 			n, chaine, n -> minimax_valeur);
 
 	for(int i=0; i<n -> nb_fils; i++){
@@ -408,7 +408,7 @@ void minimax_printNode(Node* n, FILE *file){
 
 void minimax_export_dot(Node* t, FILE *file) {
 	QueueOfBinaryTrees q = queue_create();
-	fprintf(file, "digraph Minimax {\n\tgraph [\n\t\trankdir = TD\n\t\tbgcolor = blue\n\t];\n\tnode [\n\t\tshape = doublecircle\n\t\tfontsize = \"12\"\n\t\tfontname=\"Harry P\"\n\t\tstyle = \"filled\"\n\t];\n\n");
+	fprintf(file, "digraph Minimax {\n\tgraph [\n\t\trotate = 90\n\t\tbgcolor = blue\n\t];\n\tnode [\n\t\tshape = none\n\t\tfontcolor = white\n\t\tfontsize = \"30\"\n\t\tfontname=\"dPoly Imperial\"\n\t];\n\n");
 
 	queue_push(q, t);
 	while (!queue_empty(q)) {

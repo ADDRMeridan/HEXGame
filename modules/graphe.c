@@ -219,6 +219,56 @@ Graphe graphe_initialisation(int n){
 	return graphe;
 }
 
+bool graphe_vide(Graphe graphe){
+	int n = graphe -> size;
+
+	for(int i=0; i<n*n; i++){
+		if(graphe -> tab[i] -> couleur != TRANSPARANT)
+			return false;
+	}
+
+	return true;
+}
+
+void graphe_suppression(Graphe *graphe){
+	int n = (*graphe) -> size;
+
+	if( graphe_vide((*graphe)) ){
+
+		for(int i=0; i<n*n; i++){
+			(*graphe) -> tab[i] = NULL;
+			free((*graphe) -> tab[i]);
+		}
+
+		(*graphe) -> tab = NULL;
+		free((*graphe) -> tab);
+
+		for(int e=0; e<n; e++){
+			(*graphe) -> W1 -> aretes[e] = NULL;
+			(*graphe) -> W2 -> aretes[e] = NULL;
+			(*graphe) -> B1 -> aretes[e] = NULL;
+			(*graphe) -> B2 -> aretes[e] = NULL;
+			free((*graphe) -> W1 -> aretes[e]);
+			free((*graphe) -> W2 -> aretes[e]);
+			free((*graphe) -> B1 -> aretes[e]);
+			free((*graphe) -> B2 -> aretes[e]);
+		}
+
+		(*graphe) -> W1 = NULL;
+		(*graphe) -> W2 = NULL;
+		(*graphe) -> B1 = NULL;
+		(*graphe) -> B2 = NULL;
+
+		free((*graphe) -> W1);
+		free((*graphe) -> W2);
+		free((*graphe) -> B1);
+		free((*graphe) -> B2);
+
+		(*graphe) = NULL;
+		free((*graphe));
+	}
+}
+
 /*  */
 void graphe_ligne_colonne(Graphe g, int graphe_num_case, int *ligne, int *col){
     assert( graphe_num_case < (g -> size * g -> size) && graphe_num_case >= 0 );
@@ -389,6 +439,54 @@ Graphe graphe_ajout_hexagone( Graphe graphe, int row, int colonne, int couleur){
 		graphe_ajout_dans_groupe( hexa, hexa -> aretes[i] );
 	
 	//printf("[%d,%d]-- \n", hexa->sommet.row, hexa->sommet.col);
+
+	return graphe;
+}
+
+Graphe graphe_supprime_hexagone( Graphe graphe, int row, int col ){
+	
+	Hexa hex = graphe_hexagone( graphe, row, col );
+	Hexa groupe;
+	int n;
+
+	if( hex -> couleur != TRANSPARANT ){
+		if( hex -> aretes[6] != NULL ){
+			groupe = hex -> aretes[6];
+			n = groupe -> nb_aretes;
+
+			for(int i=0; i<n; i++){
+
+				/* Recherche l'emplacement du sommet du groupe */
+				if( groupe -> aretes[i] == hex ){
+
+					/* Decalage */
+					for(int e=i; e<n - 1; e++){
+						groupe -> aretes[e] = groupe -> aretes[e+1];
+					}
+
+					/* Suppression de l'arete du groupe vers le sommet */
+					groupe -> aretes[n - 1] = NULL;
+					hex -> aretes[6] = NULL;
+
+					free(groupe -> aretes[n-1]);
+					groupe -> nb_aretes--;
+
+					/* Si il n'ya plus de sommet dans le groupe, on le supprime */
+					if( groupe -> nb_aretes == 0 ){
+						groupe = NULL;
+						free(groupe);
+					}
+
+					hex = graphe_colorie_sommet(hex, TRANSPARANT);
+					return graphe;
+				}
+			}
+		}
+		else{
+			hex = graphe_colorie_sommet(hex, TRANSPARANT);
+			return graphe;
+		}
+	}
 
 	return graphe;
 }
@@ -941,7 +1039,7 @@ void graphe_chaine_daffichage(Graphe graphe, char* chaine){
 	
 	for( int row=0; row<n; row++ ){
 		for (int i = 0; i < row; ++i)
-			strcat(chaine, "\t");
+			strcat(chaine, "  ");
 
 		Hexa hexa = graphe -> W1 -> aretes[row];
 
@@ -949,11 +1047,11 @@ void graphe_chaine_daffichage(Graphe graphe, char* chaine){
 			if(col == hexa -> sommet .col && row == hexa -> sommet.row){
 
 				if( hexa->couleur == 2 )
-					strcat(chaine, "T    ");
+					strcat(chaine, "<FONT COLOR=\"white\">d</FONT> ");/* transparant */
 				else if( hexa->couleur == 1 )
-					strcat(chaine, "B    ");
+					strcat(chaine, "<FONT COLOR=\"white\">k</FONT> ");/* Pion blanc */
 				else
-					strcat(chaine, "N    ");
+					strcat(chaine, "<FONT COLOR=\"black\">k</FONT> ");/* Pion noir */
 
 				/* Passe à l'Hexagone à sa droite (colonne suivante) */
 				if( col + 1 < n && hexa -> aretes[0] != NULL )
@@ -963,6 +1061,6 @@ void graphe_chaine_daffichage(Graphe graphe, char* chaine){
 			}
 
 		}
-		strcat(chaine, "\n");
+		strcat(chaine, "\n<br/>");
 	}
 }

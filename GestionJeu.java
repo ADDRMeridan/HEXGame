@@ -1,4 +1,4 @@
-package gestionJeu;
+package main.gestionJeu;
 
 
 

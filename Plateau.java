@@ -1,3 +1,6 @@
+package main;
+
+
 
 public class Plateau {
 	private int taille;

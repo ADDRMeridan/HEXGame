@@ -49,7 +49,7 @@ public class Interface implements IAffichage{
 		}
 		else
 			j='x';
-		GestionJeu.nouvellePartie(j,str2);
+		gestionJeu.GestionJeu.nouvellePartie(j,str2);
 		Premier=j;
 		this.menu=new Menu();
 	}
@@ -57,13 +57,13 @@ public class Interface implements IAffichage{
 		return this.Premier;
 	}
 	public char ProchainJoueur(){
-		if(GestionJeu.nbTourPartie()<2) return this.getPremier();
-		else return GestionJeu.ProchainJoueur();
+		if(gestionJeu.GestionJeu.nbTourPartie()<2) return this.getPremier();
+		else return gestionJeu.GestionJeu.ProchainJoueur();
 	}
 
 	
 	public int SaisieTour(char joueur){
-		System.out.println("Tour "+GestionJeu.nbTourPartie());
+		System.out.println("Tour "+gestionJeu.GestionJeu.nbTourPartie());
 		this.plateau.getPlateau();
 		System.out.println("Entrez les coordonnées de la case sur laquelle vous voulez jouer: ");
 		System.out.println("Ou entrez -1 pour accéder au menu");
@@ -103,7 +103,7 @@ public class Interface implements IAffichage{
 				} while(y<1 || y>this.plateau.getTaille());
 			
 			}
-		}while(!GestionJeu.coupValide(x, y, joueur));
+		}while(!gestionJeu.GestionJeu.coupValide(x, y, joueur));
 		return 0;
 	}
 	
@@ -119,7 +119,7 @@ public class Interface implements IAffichage{
 		char joueur;
 		for(int i=1;i<=plateau.getTaille();i++){
 			for(int j=1;j<=plateau.getTaille();j++){
-				joueur=GestionJeu.couleurCase(i,j);
+				joueur=gestionJeu.GestionJeu.couleurCase(i,j);
 				this.plateau.getLignes(j-1).getLigne(i-1).setCouleur(joueur);
 			}
 		}

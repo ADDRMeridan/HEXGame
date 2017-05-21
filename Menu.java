@@ -5,7 +5,7 @@ public class Menu {
 	}
 	
 	public boolean AnnulerDernierCoup(){
-		return GestionJeu.annuleCoup(); 
+		return gestionJeu.GestionJeu.annuleCoup(); 
 	}
 	
 	

@@ -1,3 +1,4 @@
+package main;
 import java.util.Scanner;
 
 public class JeuHex {
@@ -7,6 +8,7 @@ public class JeuHex {
 	public void Partie(){
 		boolean Abandon=false;
 		i=new Interface();
+		i.AfficherPlateau();
 		do{
 			if(i.SaisieTour(this.ProchainJoueur())==1){
 				char prochain=ProchainJoueur();
@@ -20,9 +22,10 @@ public class JeuHex {
 					System.out.println("Le joueur jouant les Noirs à gagner !");
 				}
 			}
-		}while(!gestionJeu.GestionJeu.gagnant('o') && !gestionJeu.GestionJeu.gagnant('x') && !Abandon);
-		if(gestionJeu.GestionJeu.gagnant('x')) System.out.println("Le joueur jouant les Noir à gagner !");
-		else if(gestionJeu.GestionJeu.gagnant('o')) System.out.println("Le joueur jouant les Blancs à gagner !");
+			i.AfficherPlateau();
+		}while(!GestionJeu.gagnant('o') && !GestionJeu.gagnant('x') && !Abandon);
+		if(GestionJeu.gagnant('x')) System.out.println("Le joueur jouant les Noir à gagner !");
+		else if(GestionJeu.gagnant('o')) System.out.println("Le joueur jouant les Blancs à gagner !");
 	}
 	public boolean AfficherMenu(char joueur){
 		Scanner sc=new Scanner(System.in);
@@ -36,10 +39,9 @@ public class JeuHex {
 		char carac=str.charAt(0);
 		switch (carac){
 			case 'A' | 'a':
-				if (gestionJeu.GestionJeu.annuleCoup()) System.out.println("Dernier tour annuler");
+				if (GestionJeu.annuleCoup()) System.out.println("Dernier tour annuler");
 				else System.out.println("Impossible d'annuler le dernier tour car il n'y en à pas !");
 				System.out.println("Retour au jeu");
-				i.SaisieTour(this.ProchainJoueur());
 				break;
 			case 'N' | 'n':
 				i=new Interface();
@@ -57,7 +59,7 @@ public class JeuHex {
 		return false;
 	}
 	public char ProchainJoueur(){
-		if(gestionJeu.GestionJeu.nbTourPartie()<2) return i.getPremier();
-		else return gestionJeu.GestionJeu.ProchainJoueur();
+		if(GestionJeu.nbTourPartie()<2) return i.getPremier();
+		else return GestionJeu.ProchainJoueur();
 	}
 }

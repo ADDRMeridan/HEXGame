@@ -1,3 +1,4 @@
+package main;
 
 public class LignePlateau {
 	private int taille;

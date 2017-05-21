@@ -1,5 +1,8 @@
 package main;
+import java.util.InputMismatchException;
 import java.util.Scanner;
+
+import main.gestionJeu.GestionJeu;
 
 public class JeuHex {
 	private IAffichage i;
@@ -10,7 +13,10 @@ public class JeuHex {
 		i=new Interface();
 		i.AfficherPlateau();
 		do{
-			if(i.SaisieTour(this.ProchainJoueur())==1){
+			if(!this.accederMenu()){
+			i.SaisieTour(this.ProchainJoueur());
+			}
+			else{
 				char prochain=ProchainJoueur();
 				Abandon=this.AfficherMenu(prochain);
 				if(Abandon && prochain=='x') {
@@ -22,6 +28,7 @@ public class JeuHex {
 					System.out.println("Le joueur jouant les Noirs à gagner !");
 				}
 			}
+			i.MajPlateau();
 			i.AfficherPlateau();
 		}while(!GestionJeu.gagnant('o') && !GestionJeu.gagnant('x') && !Abandon);
 		if(GestionJeu.gagnant('x')) System.out.println("Le joueur jouant les Noir à gagner !");
@@ -61,5 +68,24 @@ public class JeuHex {
 	public char ProchainJoueur(){
 		if(GestionJeu.nbTourPartie()<2) return i.getPremier();
 		else return GestionJeu.ProchainJoueur();
+	}
+	
+	public boolean accederMenu(){
+	boolean isEntier;
+	int y=0;
+	do{
+		isEntier = true;
+		System.out.println("Entrez -1 pour accéder au menu sinon entrer n'importe quel autre chiffre");
+	  	Scanner s = new Scanner(System.in);
+	  	try{
+	  		y = s.nextInt();
+	  	} catch (InputMismatchException e) 
+	  	{
+	  		System.out.println("La valeur saisie n'est pas un entier");
+	  		isEntier = false;
+	  	}
+	} while (isEntier != true);
+	if(y==-1) return true;
+	else return false;
 	}
 }

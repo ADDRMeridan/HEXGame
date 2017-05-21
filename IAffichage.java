@@ -7,7 +7,7 @@ package main;
  *---------------------------------------------*/
 public interface IAffichage {
 	//permet de faire la saisie d'un coup et potentiellement l'affichage du menu et du plateau
-	public int SaisieTour(char joueur);
+	public void SaisieTour(char joueur);
 	//permet d'afficher le plateau
 	public void AfficherPlateau();
 	//permet de mettre à jour le plateau après un coup pae exemple

@@ -1,6 +1,9 @@
 package main;
 //Ceci importe la classe Scanner du package java.util
 import java.util.Scanner;
+
+import main.gestionJeu.GestionJeu;
+
 //Ceci importe toutes les classes du package java.util
 import java.util.*;
 
@@ -63,11 +66,10 @@ public class Interface implements IAffichage{
 	}
 
 	
-	public int SaisieTour(char joueur){
+	public void SaisieTour(char joueur){
 		System.out.println("Tour "+GestionJeu.nbTourPartie());
 		this.plateau.getPlateau();
 		System.out.println("Entrez les coordonnées de la case sur laquelle vous voulez jouer: ");
-		System.out.println("Ou entrez -1 pour accéder au menu");
 		int x=0;
 		int y=0;
 		boolean isEntier = true;
@@ -85,9 +87,7 @@ public class Interface implements IAffichage{
 				  		isEntier = false;
 				  	}
 				} while (isEntier != true);
-			} while(x!=-1|| x<1 || x>this.plateau.getTaille());
-			if(x==-1) return 1;
-			else{
+			} while(x<1 || x>this.plateau.getTaille());
 				do{
 					do {
 						isEntier = true;
@@ -101,11 +101,8 @@ public class Interface implements IAffichage{
 					  		isEntier = false;
 					  	}
 					} while (isEntier != true);
-				} while( y!=-1 || y<1 || y>this.plateau.getTaille());
-				if(x==-1) return 1;
-			}
+				} while(y<1 || y>this.plateau.getTaille());
 		}while(!GestionJeu.coupValide(x, y, joueur));
-		return 0;
 	}
 	
 	public Plateau getPlateau(){

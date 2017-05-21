@@ -1,5 +1,7 @@
 package main;
 
+import main.gestionJeu.GestionJeu;
+
 public class Menu {
 	public Menu(){
 		

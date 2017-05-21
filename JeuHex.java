@@ -49,9 +49,11 @@ public class JeuHex {
 		switch (carac){
 			case 'A':
 				if (GestionJeu.annuleCoup()) System.out.println("Dernier tour annuler");
-				else System.out.println("Impossible d'annuler le dernier tour car il n'y en à pas !");
-				System.out.println("Retour au jeu");
-				this.ProchainJoueur();
+				else {
+					System.out.println("Impossible d'annuler le dernier tour car il n'y en à pas !");
+					System.out.println("Retour au jeu");
+					this.ProchainJoueur();
+				}
 				break;
 			case 'N':
 				i=new Interface();

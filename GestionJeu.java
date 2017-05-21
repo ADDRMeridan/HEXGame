@@ -1,4 +1,6 @@
-package gestionJeu;
+package main;
+
+
 
 public class GestionJeu{
 	static{

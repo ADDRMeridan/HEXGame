@@ -1,3 +1,4 @@
+package main;
 
 public class Menu {
 	public Menu(){
@@ -5,7 +6,7 @@ public class Menu {
 	}
 	
 	public boolean AnnulerDernierCoup(){
-		return gestionJeu.GestionJeu.annuleCoup(); 
+		return GestionJeu.annuleCoup(); 
 	}
 	
 	

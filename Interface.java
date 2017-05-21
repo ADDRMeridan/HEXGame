@@ -1,5 +1,6 @@
+package main;
 //Ceci importe la classe Scanner du package java.util
-import java.util.Scanner; 
+import java.util.Scanner;
 //Ceci importe toutes les classes du package java.util
 import java.util.*;
 
@@ -49,7 +50,7 @@ public class Interface implements IAffichage{
 		}
 		else
 			j='x';
-		gestionJeu.GestionJeu.nouvellePartie(j,str2);
+		GestionJeu.nouvellePartie(j,str2);
 		Premier=j;
 		this.menu=new Menu();
 	}
@@ -57,13 +58,13 @@ public class Interface implements IAffichage{
 		return this.Premier;
 	}
 	public char ProchainJoueur(){
-		if(gestionJeu.GestionJeu.nbTourPartie()<2) return this.getPremier();
-		else return gestionJeu.GestionJeu.ProchainJoueur();
+		if(GestionJeu.nbTourPartie()<2) return this.getPremier();
+		else return GestionJeu.ProchainJoueur();
 	}
 
 	
 	public int SaisieTour(char joueur){
-		System.out.println("Tour "+gestionJeu.GestionJeu.nbTourPartie());
+		System.out.println("Tour "+GestionJeu.nbTourPartie());
 		this.plateau.getPlateau();
 		System.out.println("Entrez les coordonnées de la case sur laquelle vous voulez jouer: ");
 		System.out.println("Ou entrez -1 pour accéder au menu");
@@ -84,7 +85,7 @@ public class Interface implements IAffichage{
 				  		isEntier = false;
 				  	}
 				} while (isEntier != true);
-			} while(x<1 || x>this.plateau.getTaille());
+			} while(x!=-1|| x<1 || x>this.plateau.getTaille());
 			if(x==-1) return 1;
 			else{
 				do{
@@ -100,10 +101,10 @@ public class Interface implements IAffichage{
 					  		isEntier = false;
 					  	}
 					} while (isEntier != true);
-				} while(y<1 || y>this.plateau.getTaille());
-			
+				} while( y!=-1 || y<1 || y>this.plateau.getTaille());
+				if(x==-1) return 1;
 			}
-		}while(!gestionJeu.GestionJeu.coupValide(x, y, joueur));
+		}while(!GestionJeu.coupValide(x, y, joueur));
 		return 0;
 	}
 	
@@ -119,7 +120,7 @@ public class Interface implements IAffichage{
 		char joueur;
 		for(int i=1;i<=plateau.getTaille();i++){
 			for(int j=1;j<=plateau.getTaille();j++){
-				joueur=gestionJeu.GestionJeu.couleurCase(i,j);
+				joueur=GestionJeu.couleurCase(i,j);
 				this.plateau.getLignes(j-1).getLigne(i-1).setCouleur(joueur);
 			}
 		}

@@ -148,7 +148,7 @@ public class Interface implements IAffichage{
 				}while(!GestionJeu.coupValide(x, y, joueur));
 			}
 		}
-		return true;
+		return false;
 	}
 	
 	public Plateau getPlateau(){

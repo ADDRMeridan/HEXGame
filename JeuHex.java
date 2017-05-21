@@ -15,10 +15,7 @@ public class JeuHex {
 		i=new Interface();
 		i.AfficherPlateau();
 		do{
-			if(!this.accederMenu()){
-			i.SaisieTour(this.ProchainJoueur());
-			}
-			else{
+			if(i.SaisieTour(this.ProchainJoueur())){
 				char prochain=ProchainJoueur();
 				Abandon=this.AfficherMenu(prochain);
 				if(Abandon && prochain=='x') {

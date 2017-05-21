@@ -1,11 +1,9 @@
 package main;
 
 
-//Ceci importe la classe Scanner du package java.util
-import java.util.Scanner;
-
 import main.gestionJeu.GestionJeu;
 
+//Ceci importe la classe Scanner du package java.util
 //Ceci importe toutes les classes du package java.util
 import java.util.*;
 
@@ -66,43 +64,91 @@ public class Interface implements IAffichage{
 	}
 
 	
-	public void SaisieTour(char joueur){
+	public boolean SaisieTour(char joueur){
 		System.out.println("Tour "+GestionJeu.nbTourPartie());
 		this.plateau.getPlateau();
-		System.out.println("Entrez les coordonnées de la case sur laquelle vous voulez jouer: ");
+		System.out.println("Veuillez saisir la colonne: ");
+		System.out.println("Ou entrez -1 pour accéder au menu");
 		int x=0;
 		int y=0;
 		boolean isEntier = true;
-		do{
-			do{
-				do {
-					isEntier = true;
-					System.out.print("Veuillez saisir la colonne: ");
-				  	Scanner s = new Scanner(System.in);
-				  	try{
-				  		x = s.nextInt();
-				  	} catch (InputMismatchException e) 
-				  	{
-				  		System.out.println("La valeur saisie n'est pas un entier");
-				  		isEntier = false;
-				  	}
-				} while (isEntier != true);
-			} while(x<1 || x>this.plateau.getTaille());
-				do{
+		do {
+			isEntier = true;
+		  	Scanner s = new Scanner(System.in);
+		  	try{
+		  		x = s.nextInt();
+		  	} catch (InputMismatchException e) 
+		  	{
+		  		System.out.println("La valeur saisie n'est pas un entier");
+		  		isEntier = false;
+		  	}
+		} while (isEntier != true);
+		if(x==-1){
+			return true;
+		}
+		else{
+				while(x<1 || x>this.plateau.getTaille()){
 					do {
 						isEntier = true;
-						System.out.print("Veuillez saisir la ligne: ");
+						System.out.print("Veuillez saisir la colonne: ");
 					  	Scanner s = new Scanner(System.in);
 					  	try{
-					  		y = s.nextInt();
+					  		x = s.nextInt();
 					  	} catch (InputMismatchException e) 
 					  	{
 					  		System.out.println("La valeur saisie n'est pas un entier");
 					  		isEntier = false;
 					  	}
 					} while (isEntier != true);
-				} while(y<1 || y>this.plateau.getTaille());
-		}while(!GestionJeu.coupValide(x, y, joueur));
+				}
+					do{
+						do {
+							isEntier = true;
+							System.out.print("Veuillez saisir la ligne: ");
+						  	Scanner s = new Scanner(System.in);
+						  	try{
+						  		y = s.nextInt();
+						  	} catch (InputMismatchException e) 
+						  	{
+						  		System.out.println("La valeur saisie n'est pas un entier");
+						  		isEntier = false;
+						  	}
+						} while (isEntier != true);
+					} while(y<1 || y>this.plateau.getTaille());
+			if(!GestionJeu.coupValide(x, y, joueur)){
+				do{
+					do{
+						do {
+							isEntier = true;
+							System.out.print("Veuillez saisir la colonne: ");
+						  	Scanner s = new Scanner(System.in);
+						  	try{
+						  		x = s.nextInt();
+						  	} catch (InputMismatchException e) 
+						  	{
+						  		System.out.println("La valeur saisie n'est pas un entier");
+						  		isEntier = false;
+						  	}
+						} while (isEntier != true);
+					} while(x<1 || x>this.plateau.getTaille());
+						do{
+							do {
+								isEntier = true;
+								System.out.print("Veuillez saisir la ligne: ");
+							  	Scanner s = new Scanner(System.in);
+							  	try{
+							  		y = s.nextInt();
+							  	} catch (InputMismatchException e) 
+							  	{
+							  		System.out.println("La valeur saisie n'est pas un entier");
+							  		isEntier = false;
+							  	}
+							} while (isEntier != true);
+						} while(y<1 || y>this.plateau.getTaille());
+				}while(!GestionJeu.coupValide(x, y, joueur));
+			}
+		}
+		return true;
 	}
 	
 	public Plateau getPlateau(){

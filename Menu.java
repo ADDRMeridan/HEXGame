@@ -1,6 +1,5 @@
-package main;
 
-import main.gestionJeu.GestionJeu;
+import gestionJeu.GestionJeu;
 
 public class Menu {
 	public Menu(){
@@ -8,7 +7,7 @@ public class Menu {
 	}
 	
 	public boolean AnnulerDernierCoup(){
-		return GestionJeu.annuleCoup(); 
+		return gestionJeu.GestionJeu.annuleCoup(); 
 	}
 	
 	

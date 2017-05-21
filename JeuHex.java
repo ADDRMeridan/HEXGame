@@ -8,27 +8,30 @@ import main.gestionJeu.GestionJeu;
 
 public class JeuHex {
 	private IAffichage i;
+	char courant;
 	public JeuHex(){
 	}
 	public void Partie(){
 		boolean Abandon=false;
 		i=new Interface();
 		i.AfficherPlateau();
+		this.courant=i.getPremier();
 		do{
-			if(i.SaisieTour(this.ProchainJoueur())){
-				char prochain=ProchainJoueur();
-				Abandon=this.AfficherMenu(prochain);
-				if(Abandon && prochain=='x') {
+			System.out.println("Au joueur "+courant+"de jouer ");
+			if(i.SaisieTour(this.courant)){
+				Abandon=this.AfficherMenu(this.courant);
+				if(Abandon && this.courant=='x') {
 					System.out.println("Le joueur jouant les Noirs à abandonner !");
 					System.out.println("Le joueur jouant les Blancs à gagner !");
 				}
-				else if(Abandon && prochain=='o'){
+				else if(Abandon && this.courant=='o'){
 					System.out.println("Le joueur jouant les Blancs à abandonner !");
 					System.out.println("Le joueur jouant les Noirs à gagner !");
 				}
 			}
 			i.MajPlateau();
 			i.AfficherPlateau();
+			this.ProchainJoueur();
 		}while(!GestionJeu.gagnant('o') && !GestionJeu.gagnant('x') && !Abandon);
 		if(GestionJeu.gagnant('x')) System.out.println("Le joueur jouant les Noir à gagner !");
 		else if(GestionJeu.gagnant('o')) System.out.println("Le joueur jouant les Blancs à gagner !");
@@ -48,9 +51,12 @@ public class JeuHex {
 				if (GestionJeu.annuleCoup()) System.out.println("Dernier tour annuler");
 				else System.out.println("Impossible d'annuler le dernier tour car il n'y en à pas !");
 				System.out.println("Retour au jeu");
+				this.ProchainJoueur();
 				break;
 			case 'N':
 				i=new Interface();
+				this.courant=i.getPremier();
+				this.ProchainJoueur();
 				break;
 			case 'F':
 				return true;
@@ -60,13 +66,13 @@ public class JeuHex {
 				break;
 			default:
 				System.out.println("Retour au jeu");
-				i.SaisieTour(joueur);
+				this.ProchainJoueur();
 		}
 		return false;
 	}
-	public char ProchainJoueur(){
-		if(GestionJeu.nbTourPartie()<2) return i.getPremier();
-		else return GestionJeu.ProchainJoueur();
+	public void ProchainJoueur(){
+		if(courant=='x') courant='o';
+		else courant='x';
 	}
 	
 	public boolean accederMenu(){

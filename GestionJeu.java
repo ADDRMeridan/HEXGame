@@ -1,4 +1,4 @@
-package gestionJeu;
+
 
 public class GestionJeu{
 	static{

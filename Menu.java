@@ -4,17 +4,10 @@ public class Menu {
 		
 	}
 	
-	public void AnnulerDernierCoup(){
-		
+	public boolean AnnulerDernierCoup(){
+		return GestionJeu.annuleCoup(); 
 	}
 	
-	public void Abandon(){
-		
-	}
-	
-	public void NouvellePartie(){
-		
-	}
 	
 	public void Sauvegarder(){
 		

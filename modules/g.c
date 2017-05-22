@@ -44,7 +44,7 @@ void g_affichage(){
 }
 
 void g_supprime_hexagone( int row, int col ){
-	g = graphe_supprime_hexagone( g,  row, col )
+	g = graphe_supprime_hexagone( g,  row, col );
 }
 
 void g_suppression(){

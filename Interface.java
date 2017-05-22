@@ -66,7 +66,6 @@ public class Interface implements IAffichage{
 	
 	public boolean SaisieTour(char joueur){
 		System.out.println("Tour "+GestionJeu.nbTourPartie());
-		this.plateau.getPlateau();
 		System.out.println("Veuillez saisir la colonne: ");
 		System.out.println("Ou entrez -1 pour accéder au menu");
 		int x=0;

@@ -14,7 +14,6 @@ public class JeuHex {
 	public void Partie(){
 		boolean Abandon=false;
 		i=new Interface();
-		i.AfficherPlateau();
 		this.courant=i.getPremier();
 		do{
 			System.out.println("Au joueur "+courant+"de jouer ");

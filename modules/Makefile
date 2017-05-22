@@ -1,24 +1,25 @@
-.PHONY: all clean maxclean
+.PHONY: all clean maxclean 
 
-CC=gcc
-CFLAGS= -Wall -std=c99
-LDFLAGS=
-EXEC=Jeu
-OBJ=main.o GestionJeu.o GestionPlateau.o game.o saveload.o g.o graphe.o ensemble.o
-all:	$(OBJ)
-	$(CC) $(CFLAGS) $(OBJ) -o $(EXEC) $(LDFLAGS)
+CC = gcc
+CFLAGS = -Wall -std=c99 -g
+LDFLAGS = -lm
+EXEC = main
+OBJ = graphe.o file.o ensemble.o GestionJeu.o g.o game.o saveload.o 
 
-ensemble.o: ensemble.c ensemble.h element_sommet.h
-graphe.o: graphe.c graphe.h ensemble.h
-g.o: g.c g.h graphe.h ensemble.h
-saveload.o: saveload.c saveload.h game.h
-game.o: game.c game.h
-GestionPlateau.o: GestionPlateau.c GestionPlateau.h game.h saveload.h
-GestionJeu.o: GestionJeu.c GestionJeu.h g.h GestionPlateau.h
-main.o: main.c GestionJeu.h
+chemin="E:\Programmes\Java32\jdk1.8.0_131\include"
+chemin2="E:\Programmes\Java32\jdk1.8.0_131\include\win32"
+nom="JavaGestionJeu"
+
+linux:	$(OBJ)	
+	gcc -I$chemin -I$chemin2 gcc -shared -o "lib$nom".so $nom.o
+
+## Windows/gcc 
+windows:
+	gcc -c -I $(chemin) -I $(chemin2) -o $(nom).o test.c
+	gcc -shared -o $(nom).dll $(nom).c $(nom).c $(nom).def
 
 clean:
 	rm -rf *.o
 
 maxclean: clean
-	  rm -rf $(EXEC)
+	  rm -rf *.exe

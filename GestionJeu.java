@@ -1,4 +1,4 @@
-package main.gestionJeu;
+package gestionJeu;
 
 
 
@@ -15,4 +15,6 @@ public class GestionJeu{
 	public static native int nbTourPartie();
 	public static native boolean ContreOrdinateur();
 	public static native char ProchainJoueur();
+	public static native void SauvegarderPartie(String nom);
+	public static native boolean ChargerPartie(String nom);
 }

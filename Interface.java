@@ -1,7 +1,7 @@
-package main;
 
 
-import main.gestionJeu.GestionJeu;
+
+import gestionJeu.GestionJeu;
 
 //Ceci importe la classe Scanner du package java.util
 //Ceci importe toutes les classes du package java.util
@@ -52,20 +52,20 @@ public class Interface implements IAffichage{
 		}
 		else
 			j='x';
-		GestionJeu.nouvellePartie(j,str2);
+		gestionJeu.GestionJeu.nouvellePartie(j,str2);
 		Premier=j;
 	}
 	public char getPremier(){
 		return this.Premier;
 	}
 	public char ProchainJoueur(){
-		if(GestionJeu.nbTourPartie()<2) return this.getPremier();
-		else return GestionJeu.ProchainJoueur();
+		if(gestionJeu.GestionJeu.nbTourPartie()<2) return this.getPremier();
+		else return gestionJeu.GestionJeu.ProchainJoueur();
 	}
 
 	
 	public boolean SaisieTour(char joueur){
-		System.out.println("Tour "+GestionJeu.nbTourPartie());
+		System.out.println("Tour "+gestionJeu.GestionJeu.nbTourPartie());
 		System.out.println("Veuillez saisir la colonne: ");
 		System.out.println("Ou entrez -1 pour accéder au menu");
 		int x=0;
@@ -114,7 +114,7 @@ public class Interface implements IAffichage{
 						  	}
 						} while (isEntier != true);
 					} while(y<1 || y>this.plateau.getTaille());
-			if(!GestionJeu.coupValide(x, y, joueur)){
+			if(!gestionJeu.GestionJeu.coupValide(x, y, joueur)){
 				do{
 					do{
 						do {
@@ -144,7 +144,7 @@ public class Interface implements IAffichage{
 							  	}
 							} while (isEntier != true);
 						} while(y<1 || y>this.plateau.getTaille());
-				}while(!GestionJeu.coupValide(x, y, joueur));
+				}while(!gestionJeu.GestionJeu.coupValide(x, y, joueur));
 			}
 		}
 		return false;
@@ -162,7 +162,7 @@ public class Interface implements IAffichage{
 		char joueur;
 		for(int i=1;i<=plateau.getTaille();i++){
 			for(int j=1;j<=plateau.getTaille();j++){
-				joueur=GestionJeu.couleurCase(i,j);
+				joueur=gestionJeu.GestionJeu.couleurCase(i,j);
 				this.plateau.getLignes(j-1).getLigne(i-1).setCouleur(joueur);
 			}
 		}

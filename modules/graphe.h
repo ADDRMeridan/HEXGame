@@ -1,6 +1,6 @@
 /*----------------------------------------------
  *Structure de Donnée Graphe
- *
+ *Dêpendance : ensemble
  *Auteur : MOHAMED Mourdas
  *Date de modification : 09/05/2017
  *---------------------------------------------*/
@@ -65,24 +65,55 @@ Hexa graphe_colorie_sommet(Hexa sommet, int couleur);
  */
 Graphe graphe_ajout_hexagone(Graphe graphe, int row, int colonne, int couleur);
 
-
+/**
+ *	@brief Supprime un graphe si il est vide(tout les pion son transparent).
+ *
+ *	@param graphe : le graphe concerner
+ *
+ *  @axiome : graphe_suppression(graphe_initialisation(n)) -> NULL;
+ 		graphe_suppression(graphe_ajout_hexagone(g, row, col, coul)) ->  g = graphe_ajout_hexagone(g, row, col, coul);
+ *
+ */
 void graphe_suppression(Graphe *graphe);
 
+/**
+ *	@brief Fournie un graphe reduit.
+ *
+ *	@param graphe : le graphe concerner
+ *
+ *  @return Graphe : un graphe reduit.
+ *
+ */
 Graphe graphe_reduit( Graphe graphe );
 
 /**
- *	@brief forme un graphe_groupe si les pion son adjacent.
+ *	@brief forme un groupe si les pion son adjacent.
  *
  *	@param hex_1 : premier graphe_hexagone concerner
  *	@param hex_2 : second graphe_hexagone concerner
  *
- *  @return Hexa : deux sommet dans un graphe_groupe si adjacent, sinon deux sommet
+ *  @return Hexa : deux sommet dans un groupe si adjacent, sinon deux sommet
  		distinct.
  *
  */
 void graphe_ajout_dans_groupe(Hexa hex_1, Hexa hex_2);
 
+/**
+ *	@brief supprime un hexagone (le colrie en transparant, et le supprime de son groupe si il en existe un) 
+ 		a l'emplacement ligne colonne indiqué.
+ *
+ *	@param graphe : le Graphe en question
+ *	@param row : la ligne
+ *	@param colonne : la colonne
+ *
+ *	@pre-cond : 0 <= row < graphe_size( graphe ); && 0 <= colonne < graphe_size( graphe );
+ *
+ *  @return Graphe : le graphe avec un sommet tranparant (hexagone supprimé) en plus ou pas.
+ *
+ */
 Graphe graphe_supprime_hexagone( Graphe graphe, int row, int col );
+
+
 
 /* ----------------------------------
             Accesseurs
@@ -127,11 +158,11 @@ Hexa graphe_hexagone(Graphe graphe, int row, int colonne);
 int graphe_couleur_sommet(Hexa hex);
 
 /**
- *	@brief fourni le graphe_groupe d'un sommet.
+ *	@brief fourni le groupe d'un sommet.
  *
  *	@param sommet : le sommet en question
  *
- *  @return Hexa : un graphe_groupe (sommet) si il en a un, sinon retourne NULL.
+ *  @return Hexa : un groupe (sommet) si il en a un, sinon retourne NULL.
  *
  */
 Hexa graphe_groupe(Hexa sommet);
@@ -165,17 +196,17 @@ bool graphe_chaine_gagnante(Graphe graphe, int couleur);
 int graphe_distance_hexagones(Hexa p, Hexa q);
 
 /**
- *	@brief cherche la distance minimal entre un sommet et un graphe_groupe.
+ *	@brief cherche la distance minimal entre un sommet et un groupe.
  *
  *	@param p : le sommet concernet
- *	@param graphe_groupe : le graphe_groupe concernet
+ *	@param groupe : le groupe concernet
  *
- *	@pre-condition : graphe_groupe != NULL
+ *	@pre-condition : groupe != NULL
  *
  *  @return int : un entier corespondant a la distance minimale.
  *
  */
-int graphe_distance_hexagone_groupe( Hexa p, Hexa graphe_groupe);
+int graphe_distance_hexagone_groupe( Hexa p, Hexa groupe);
 
 /**
  *	@brief indique si deux graphe_hexagone sont adjacent (se touche).
@@ -189,14 +220,46 @@ int graphe_distance_hexagone_groupe( Hexa p, Hexa graphe_groupe);
 bool graphe_sommet_adjacent(Hexa hex_1, Hexa hex_2);
 
 
+/**
+ *	@brief ecris un fichier dot de la structure d'un Graphe.
+ *
+ *	@param g : le Graphe concerner
+ *	@param name : le nom du fichier dans lequel ecrire
+ *
+ */
 void graphe_dot(Graphe g, char * name);
 
-/* */
+/**
+ *	@brief Affiche chaque coordonée ligne colonne corespondant 
+ 		au element d'un graphe.
+ *
+ *	@param graphe : le Graphe à afficher
+ *
+ */
 void graphe_affiche_row_col_sommet(Graphe graphe);
 
+/**
+ *	@brief Affiche chaque element d'un graphe sous forme de lettre
+ 		coresponndant à leur couleur.
+ *
+ *	@param graphe : le Graphe à afficher
+ *
+ */
 void graphe_affichage(Graphe graphe);
 
+/**
+ *	@brief fournie une chaine d'affichage d'un graphe (pour le module minimax)
+ *
+ *	@param graphe : le Graphe conecerné
+ *	@param chaine : la chaine à modifier
+ *
+ *	@return char* chaine : une chaine corespondant a un affichage du graphe
+ *
+ */
 void graphe_chaine_daffichage(Graphe graphe, char* chaine);
 
+
+
+bool graphe_connexion_forcer(Hexa u, Hexa v);
 
 #endif

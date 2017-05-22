@@ -38,7 +38,7 @@ bool Appartient(Ensemble ens, Element el){
 /*Ajout d'un element a un ensemble*/
 Ensemble Ajout(Ensemble ensemble, Element element){
 
-    if( !Appartient(ensemble, element) ){
+    if( element != NULL && !Appartient(ensemble, element) ){
         ensemble.element = (Element*) realloc(ensemble.element, ( ensemble.cardinal + 1 ) * sizeof(Element) );
         assert( ensemble.element != NULL );
 

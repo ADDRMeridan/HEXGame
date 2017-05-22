@@ -125,9 +125,9 @@ void minimax_tri_iteratif_largeur(Minimax abr);
 
 /**
  *	@brief ecris un fichier dot de la structure d'un Noeud, corespondant 
- 		a un arbre minimax il est preferable d'avoir la 
+ 		a un arbre Minimax, il est preferable d'avoir la 
  		police de caratere "dPoly Imperial" installer sur sa machine pour utiliser, cette fonction
- 		(Permet de mieux differencier les configuration)
+ 		(Permet de mieux differencier les configurations)
  *
  *	@param t : le Noeud concerner
  *	@param file : le fichier dans lequel ecrire
@@ -158,9 +158,30 @@ void minimax_ligne_colonne(int n, int num_case, int *ligne, int *col);
  */
 bool minimax_graphe_identique(Graphe g, Graphe h);
 
-
+/**
+ *	@brief Recherche un Noeud dans l'abre Minimaxe ou se trouve un graphe similaire 
+ 		a celui passer en paramettre
+ *
+ *	@param abr : arbre Minimax dans lequel chercher
+ *	@param g : graphe a chercher
+ *	@param niveau : corespon au niveau de l'arbre minimaxe dans lequel chercher,
+ 		(niveau = nombre de coup joué, permet d'augmenter la complexité de recherche)
+ *
+ *	@return Node* : un noeud ou se trouve l'abre rechercher
+ *
+ */
 Node* minimax_search_graphe(Minimax abr, Graphe g, int nivau);
 
+/**
+ *	@brief Recherche un graphe dans un Noeud d'un arbre Minimax, dans lequel se trouve
+ 		un graphe avec une valeur de jeu, egal a celle passer en paramettre
+ *
+ *	@param n : Noeud Minimax dans lequel chercher
+ *	@param valeur_gagnante : valeur de jeu a trouver
+ *	
+ *	@return Graphe : un graphe du Noeud qui possede la valeur de jeu, corespondante
+ *
+ */
 Graphe minimax_search_config_gagnant(Node* n, int valeur_gagnante);
 
 #endif

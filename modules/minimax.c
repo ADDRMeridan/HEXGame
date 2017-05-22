@@ -198,8 +198,6 @@ Node* minimax_ajout_successeur(Node* n, Ensemble ensemble, int couleur){
 
 	aux -> nb_fils = c;
 
-	//printf("c == %d n = %d\n", cardinal(ensemble), aux);
-
 	for(int i=0; i<aux -> nb_fils; i++){
 
 		add = (Node*) malloc( sizeof( Node ) );

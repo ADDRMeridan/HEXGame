@@ -1,7 +1,12 @@
 
+
+
+
 public class CasePlateau {
 	private char couleur;
-	public CasePlateau(){
+	private int numColonne;
+	public CasePlateau(int numColonne){
+		this.numColonne=numColonne;
 		this.couleur='.';
 	}
 	public char getCouleur() {
@@ -11,4 +16,7 @@ public class CasePlateau {
 		this.couleur = couleur;
 	}
 	
+	int getNumColonne(){
+		return this.numColonne;
+	}
 }

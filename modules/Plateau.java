@@ -1,4 +1,7 @@
 
+
+
+
 public class Plateau {
 	private int taille;
 	private LignePlateau lignes[];
@@ -11,14 +14,14 @@ public class Plateau {
 		this.taille=11;
 		lignes=new LignePlateau[this.taille];
 		for(int i=0;i<this.taille;i++)
-			lignes[i]=new LignePlateau(this.taille);
+			lignes[i]=new LignePlateau(this.taille,i);
 	}
 	
 	public Plateau (int taille){
 		this.taille=taille;
 		lignes=new LignePlateau[this.taille];
 		for(int i=0;i<this.taille;i++)
-			lignes[i]=new LignePlateau(this.taille);
+			lignes[i]=new LignePlateau(this.taille,i);
 	}
 	public void AfficherHautDuPlateau() {
 		for(int i=0;i<this.taille;i++)

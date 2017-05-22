@@ -1,3 +1,9 @@
+/*----------------------------------------------
+ *Auteur : MOHAMED Mourdas
+ *Dêpendance : graphe, ensemble 
+ *Date de modification : 15/05/2017
+ *---------------------------------------------*/
+
 #include <stdlib.h>
 #include <assert.h>
 #include <stdio.h>

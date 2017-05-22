@@ -221,6 +221,11 @@ Graphe graphe_initialisation(int n){
 	return graphe;
 }
 
+void graphe_col_row_sommet(Hexa h, int* row, int* col){
+	*row = h -> sommet.row; 
+	*col = h -> sommet.col; 
+}
+
 bool graphe_vide(Graphe graphe){
 	int n = graphe -> size;
 
@@ -999,13 +1004,13 @@ void graphe_printNode(Hexa n, FILE *file){
 	
 	if(n -> couleur == BLANC)
 		fprintf(file, "\tn%d [style=filled, fillcolor=gold1, label=\"%d , %d\"];\n",
-			n, n -> sommet.row, n -> sommet.col);
+			(int)n, n -> sommet.row, n -> sommet.col);
 	else if(n -> couleur == NOIR)
 		fprintf(file, "\tn%d [style=filled, fillcolor=navyblue, fontcolor=gold1, label=\"%d , %d\"];\n",
-			n, n -> sommet.row, n -> sommet.col);
+			(int)n, n -> sommet.row, n -> sommet.col);
 	else
 		fprintf(file, "\tn%d [style=filled, fillcolor=white, label=\"%d , %d\"];\n",
-			n, n -> sommet.row, n -> sommet.col);
+			(int)n, n -> sommet.row, n -> sommet.col);
 	
 	char color[20];
 
@@ -1014,13 +1019,13 @@ void graphe_printNode(Hexa n, FILE *file){
 			
 			if( i == 0 ){
 				fprintf(file, "\t{rank=same n%d n%d}\n",
-					n, n -> aretes[i]);
+					(int)n, n -> aretes[i]);
 			}
 
 			couleur(i, color);
 
 			fprintf(file, "\tn%d -> n%d [penwidth = 2, label=\"%d\" color=%s]\n",
-				n, n -> aretes[i], i, color);
+				(int)n, n -> aretes[i], i, color);
 		}
 	}
 }

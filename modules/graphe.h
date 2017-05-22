@@ -8,6 +8,7 @@
 #ifndef GRAPHE_H
 #define GRAPHE_H
 
+
 /* Couleur */
 #define TRANSPARANT	2
 #define BLANC 		1
@@ -258,8 +259,18 @@ void graphe_affichage(Graphe graphe);
  */
 void graphe_chaine_daffichage(Graphe graphe, char* chaine);
 
-
-
+/**
+ *	@brief verifie si 2 sommet son forcement connecté
+ *
+ *	@param u : le 1er sommet concerner
+ *	@param v : le second sommet concerner
+ *
+ *	@return bool : true si il son forecement connecter, false sinon
+ *
+ */
 bool graphe_connexion_forcer(Hexa u, Hexa v);
+
+
+void graphe_col_row_sommet(Hexa h, int* row, int* col);
 
 #endif

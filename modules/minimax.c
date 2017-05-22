@@ -1,6 +1,6 @@
 /*----------------------------------------------
  *Auteur : MOHAMED Mourdas
- *Dêpendance : ensemble, element_g, file2,
+ *Dêpendance : ensemble, element_g, file,
  	graphe
  *Date de modification : 14/05/2017
  *---------------------------------------------*/
@@ -226,7 +226,6 @@ Node* minimax_ajout_successeur(Node* n, Ensemble ensemble, int couleur){
 		}
 
 		minimax( add );
-		//printf("-\n");
 		//graphe_affichage(add -> minimax_config);
 	}
 
@@ -388,18 +387,18 @@ void minimax_printNode(Node* n, FILE *file){
 	graphe_chaine_daffichage( n -> minimax_config, chaine);
 	if(n -> couleur == BLANC)
 		fprintf(file, "\tn%d [fillcolor = ghostwhite, label=<%s %d>];\n",
-			n, chaine, n -> minimax_valeur);
+			(int)n, chaine, n -> minimax_valeur);
 	else if(n -> couleur == NOIR)
 		fprintf(file, "\tn%d [fillcolor = deepskyblue1, fontcolor = black, label=<%s %d>];\n",
-			n, chaine, n -> minimax_valeur);
+			(int)n, chaine, n -> minimax_valeur);
 	else
 		fprintf(file, "\tn%d [fillcolor = gold1, label=<%s %d>];\n",
-			n, chaine, n -> minimax_valeur);
+			(int)n, chaine, n -> minimax_valeur);
 
 	for(int i=0; i<n -> nb_fils; i++){
 		if(n -> fils[i] != NULL){
 			fprintf(file, "\tn%d -> n%d [penwidth = 3, color=white]\n",
-				n, n -> fils[i]);
+				(int)n, n -> fils[i]);
 		}
 	}
 }

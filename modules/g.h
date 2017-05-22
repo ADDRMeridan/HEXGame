@@ -1,4 +1,12 @@
+/*----------------------------------------------
+ *Pour l'utilisation du graphe sur Java
+ *Auteur : MOHAMED Mourdas
+ *Dêpendance : ensemble, graphe
+ *Date de modification : 13/05/2017
+ *---------------------------------------------*/
 
+#ifndef G_H
+#define G_H
 
 void g_initialisation(int n);
 
@@ -24,3 +32,5 @@ bool g_vide();
 
 /* supprime le graphe g si il est vide (vide = tout les hexagone sont transparant)*/
 void g_suppression();
+
+#endif

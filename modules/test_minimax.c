@@ -1,3 +1,10 @@
+/*----------------------------------------------
+ *module de test du module minimax
+ *
+ *Auteur : MOHAMED Mourdas
+ *Date de modification : 13/05/2017
+ *---------------------------------------------*/
+
 #include <stdlib.h>
 #include <assert.h>
 #include <stdio.h>
@@ -84,7 +91,7 @@ void test_ia_minimax(int n){
     int nb_tour = 0;
 
     Minimax m = minimax_initialisation(n);
-	Graphe g = graphe_initialisation(2);
+	Graphe g = graphe_initialisation(n);
     
 	m = minimax_build(m, n);
 
@@ -117,6 +124,7 @@ void test_ia_minimax(int n){
 	    }
 
 		graphe_affichage(g);
+		printf("\n");
 		nb_tour++;
     }
 

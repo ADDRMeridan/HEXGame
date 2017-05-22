@@ -1,6 +1,6 @@
 /*----------------------------------------------
  *Structure de Donnée Minimax
- *
+ *Dependance : file, graphe, ensemble
  *Auteur : MOHAMED Mourdas
  *Date de modification : 14/05/2017
  *---------------------------------------------*/

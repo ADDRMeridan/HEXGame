@@ -1,3 +1,11 @@
+/*----------------------------------------------
+ *module de test du graphe
+ *
+ *Auteur : MOHAMED Mourdas
+ *Date de modification : 13/05/2017
+ *---------------------------------------------*/
+
+
 #include <stdlib.h>
 #include <assert.h>
 #include <stdio.h>
@@ -33,6 +41,15 @@ void test_construction(int n){
 	graphe = graphe_ajout_hexagone( graphe, 1, 1, BLANC );
 	graphe = graphe_ajout_hexagone( graphe, 1, 0, BLANC );
 	graphe = graphe_ajout_hexagone( graphe, 1, 3, BLANC );
+	graphe = graphe_ajout_hexagone( graphe, 2, 0, BLANC );
+	graphe = graphe_ajout_hexagone( graphe, 3, 1, BLANC );
+
+	printf("\n/* Test Connexion forcer */\n");
+	bool FC = graphe_connexion_forcer(graphe_hexagone(graphe , 2, 0), graphe_hexagone(graphe , 3, 1));
+	printf("Connexion forcer = %d\n", FC);//doit etre = 1
+	
+	FC = graphe_connexion_forcer(graphe_hexagone(graphe , 0, 0), graphe_hexagone(graphe , 3, 1));
+	printf("Connexion forcer = %d\n", FC);//doit etre = 0
 
 	printf("NOIR  %d\n", graphe_chaine_gagnante(graphe, NOIR) );
 	printf("BLANC  %d\n", graphe_chaine_gagnante(graphe, BLANC) );
@@ -87,13 +104,46 @@ void test_play(int n){
 		printf("NOIR WINNER\n");
 }
 
+void test_suppression(int n){
+	Graphe graphe = graphe_initialisation(n);
+
+	for(int e=3; e>=0; e--)
+		graphe = graphe_ajout_hexagone( graphe, e, 2, NOIR );
+
+	graphe = graphe_ajout_hexagone( graphe, 1, 1, BLANC );
+	graphe = graphe_ajout_hexagone( graphe, 1, 0, BLANC );
+	graphe = graphe_ajout_hexagone( graphe, 1, 3, BLANC );
+
+	graphe_affichage( graphe );
+
+	printf("\nsuppression de l'hexagone [0,2]\n");
+	graphe_supprime_hexagone(graphe, 0, 2);
+	graphe_affichage( graphe );
+
+	printf("\nsuppression de tout les hexagones \n");
+	for(int e=3; e>=0; e--)
+		graphe = graphe_supprime_hexagone( graphe, e, 2 );
+	printf("---\n");
+
+	graphe = graphe_supprime_hexagone( graphe, 1, 1 );
+	graphe = graphe_supprime_hexagone( graphe, 1, 0 );
+	graphe = graphe_supprime_hexagone( graphe, 1, 3 );
+
+	graphe_affichage( graphe );
+	graphe_suppression( &graphe );
+
+	if( graphe == NULL )
+		printf("suppresion graphe [OK]\n");
+}
+
 void menu(){
 	int choix;
 	int taille = 0;
 
-	printf("1:\tTest de construction Graphe\n");
-	printf("2:\tTest jouer humain contre humain\n");
-	printf("Autre:\tPour quitter\n");
+	printf("1:\tTest de construction Graphe.\n");
+	printf("2:\tTest jouer humain contre humain.\n");
+	printf("3:\tTest suppression d'hexagone et graphe.\n");
+	printf("Autre:\tPour quitter.\n");
 	printf("Choix ? : ");
 	scanf("%d", &choix);
 
@@ -114,6 +164,9 @@ void menu(){
 			else
         		test_play(4);
             break;
+        case 3 :
+        	test_suppression(4);
+        	break;
         default:
         	return;
     }
